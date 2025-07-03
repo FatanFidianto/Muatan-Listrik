@@ -1289,6 +1289,24 @@
       line-height: 1.5;
       margin-bottom: 6px;
     }
+
+    .highlight-search {
+      animation: highlightFade 2s ease-out;
+      box-shadow: 0 0 12px 6px rgba(255, 255, 0, 0.6);
+      border-radius: 10px;
+    }
+
+    @keyframes highlightFade {
+      0% {
+        background-color: rgba(255, 255, 0, 0.4);
+        box-shadow: 0 0 20px 10px rgba(255, 255, 0, 0.7);
+      }
+
+      100% {
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
   </style>
 
 </head>
@@ -1872,6 +1890,56 @@
 
       button.innerHTML = isOpen ? "Read More ▼" : "Read Less ▲";
     }
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.querySelector(".search-input");
+
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const keyword = input.value.trim().toLowerCase();
+          if (!keyword) return;
+
+          const allCandidates = document.querySelectorAll("section, .profil-grid, .pengertian-wrapper, .jenis-teks, .ciri-teks");
+          let found = false;
+
+          allCandidates.forEach(section => {
+            if (found) return;
+
+            const text = section.innerText.toLowerCase();
+            if (text.includes(keyword)) {
+              const parentSection = section.closest("section");
+              if (!parentSection) return;
+
+              const sectionId = parentSection.id;
+
+              // Cek apakah perlu aktifkan section dengan switchToSection
+              const allowedSections = ["pengertian", "jenis", "ciri", "profile"];
+              for (const idPrefix of allowedSections) {
+                if (sectionId.startsWith(idPrefix)) {
+                  switchToSection(idPrefix);
+                  break;
+                }
+              }
+
+              setTimeout(() => {
+                section.scrollIntoView({ behavior: "smooth", block: "start" });
+                section.classList.add("highlight-search");
+                setTimeout(() => section.classList.remove("highlight-search"), 2000);
+              }, 300);
+
+              found = true;
+            }
+          });
+
+          if (!found) {
+            alert("Teks tidak ditemukan di halaman.");
+          }
+        }
+      });
+    });
   </script>
 </body>
 
