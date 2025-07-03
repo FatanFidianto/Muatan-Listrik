@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perhitungan Muatan Listrik</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+    @font-face {
+      font-family: 'Futura Std Medium';
+      src: url('fonts/Futura Std Medium.ttf') format('opentype');
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Futura Std Medium', sans-serif;
+      color: #fff;
+      background: linear-gradient(160deg, #000022 0%, #000000 100%);
+    }
+
+    header {
+      background: #1c1c1c;
+      color: #fff;
+
+      padding: 20px 0 16px 10px;
+      /* atas saja, kiri dan kanan diberi 0 */
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header::after {
+      content: none;
+    }
+
+    header h1 {
+      margin-bottom: 20px;
+      padding-left: 20px;
+      font-family: 'Futura Std Medium', sans-serif;
+      color: #fcd361;
+    }
+
+    .header-right {
+      flex-grow: 1;
+      text-align: right;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 20px;
+    }
+
+    .search-icon-wrapper {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    .search-icon-wrapper svg {
+      fill: #ffffff;
+    }
+
+    .search-input {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+      background: #ffffff;
+      color: #000000;
+      font-size: 14px;
+    }
+
+    .nav-left ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      background: #111133;
+      display: flex;
+      align-items: flex-end;
+      width: 100%;
+      height: 40px;
+    }
+
+    .nav-left ul li {
+      flex-grow: 1;
+    }
+
+    .nav-left ul li a {
+      color: #fff7d9;
+      padding: 15px 20px;
+      text-decoration: none;
+      display: block;
+      font-family: 'Futura Std Medium', sans-serif;
+
+      background: #1c1c1c;
+      /* warna kotak */
+      color: #ffffff;
+
+      transform: translateY(0);
+      transition: transform 0.5s ease, background 0.5s ease, color 0.5s ease;
+
+      border-bottom: 4px solid #fff7d9;
+
+      /* diberi rounding tapi kaku */
+      border-radius: 0 0 20px 20px;
+
+      border-right: 1px solid #1c1c1c;
+
+      text-align: center;
+    }
+
+    /* Menghilangkan garis di sebelah kanan terakhir */
+    .nav-left ul li:last-child a {
+      border-right: none;
+    }
+
+    .nav-left ul li a:hover {
+      transform: translateY(10px);
+      background: #1c1c1c;
+      color: #fff7d9;
+      border-bottom: 4px solid #fcd361;
+      animation: glow-flicker 0.8s infinite;
+    }
+
+    /* Navbar yang aktif diberi garis bawah orange */
+    .nav-left ul li a.active {
+      background: #1c1c1c;
+      color: #fff7d9;
+      transform: translateY(10px);
+      border-bottom: 4px solid #fcd361;
+      animation: glow-flicker 0.8s infinite;
+    }
+
+    @keyframes glow-flicker {
+
+      0%,
+      100% {
+        text-shadow: 0 0 10px orange, 0 0 20px orange, 0 0 30px orange;
+      }
+
+      50% {
+        text-shadow: 0 0 2px orange, 0 0 5px orange, 0 0 10px orange;
+      }
+    }
+
+    /* Animasi saat berganti halaman */
+    body {
+      animation: fadeIn 0.7s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    main {
+      padding: 40px 0;
+      /* hanya atas-bawah */
+      font-family: 'Futura Std Medium', sans-serif;
+      background: #000000;
+      color: #ffffff;
+      min-height: 600px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .input-section {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      color: #fff;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      margin: 20px auto;
+    }
+
+    .input-section label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .input-section input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 10px;
+    }
+
+    .input-section button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #fcd361;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .output-section {
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 700px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      margin: 20px auto;
+    }
+
+    .output-section.hidden {
+      display: none;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0 12px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .konten-tengah {
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.02);
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(252, 211, 97, 0.08);
+    }
+
+    .input-section,
+    .output-section {
+      margin: 20px auto;
+      text-align: left;
+    }
+
+    .row-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .row-input input {
+      flex-grow: 1;
+      min-width: 0;
+    }
+
+    .row-input select {
+      width: 90px;
+    }
+
+    .judul-gaya {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .judul-gaya h2 {
+      font-size: 36px;
+      color: #fcd361;
+      margin: 0;
+    }
+
+    .soal-section {
+      background: none;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px auto;
+      margin-left: 10px;
+      max-width: 700px;
+      color: #fff;
+      box-shadow: none;
+      text-align: left;
+      position: relative;
+    }
+
+    .soal-section textarea {
+      width: 103%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+      font-size: 15px;
+      resize: vertical;
+      background-color: #fff;
+      color: #000;
+    }
+
+    .soal-section button {
+      margin-top: 3px;
+      padding: 10px 20px;
+      background: #fcd361;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .soal-section .unggah-toggle-wrapper {
+      position: absolute;
+      right: -20px;
+      top: 150px;
+      margin: 10px 0 0 0;
+      max-width: 700px;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 3px;
+    }
+
+    .soal-section button.unggah-toggle {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 2px solid #fcd361;
+      border-radius: 8px;
+      padding: 6px 12px;
+      background: transparent;
+      color: #fcd361;
+      cursor: pointer;
+      font-family: 'Futura Std Medium', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .soal-section button.unggah-toggle svg {
+      fill: currentColor;
+      transition: transform 0.3s ease, fill 0.3s ease;
+    }
+
+    .soal-section button.unggah-toggle:hover {
+      background: #fcd361;
+      color: #000;
+    }
+
+    .soal-section button.unggah-toggle:hover svg {
+      transform: translateY(-2px);
+      fill: #000;
+    }
+
+    .unggah-box {
+      margin-top: 10px;
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px dashed #fcd361;
+      text-align: center;
+
+      width: 100%;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .upload-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .upload-area input[type="file"] {
+      display: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .tab-selector {
+      display: flex;
+      gap: 5px;
+      margin-bottom: -20px;
+      margin-top: 20px;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 400px;
+      /* samakan dengan .input-section */
+      padding-left: 0;
+    }
+
+    .tab-btn {
+      background: transparent;
+      color: #fcd361;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px 10px 0 0;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      font-family: 'Futura Std Medium', sans-serif;
+    }
+
+    .tab-btn:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background-color: #222;
+      /* samakan dengan .input-section */
+      color: #fff;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-content {
+      display: none;
+      background-color: #222;
+      padding: 0;
+      border-radius: 12px 0 12px 12px;
+      box-shadow: 0 0 10px rgba(252, 211, 97, 0.08);
+      margin-top: 0;
+      max-width: 430px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .row-input {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .row-input input {
+      flex-grow: 1;
+      min-width: 0;
+      padding: 10px;
+      height: 17px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .row-input .satuan-label {
+      background: #eee;
+      padding: 8px 14px;
+      border: 1px solid #ccc;
+      border-left: none;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .penjelasan-langkah {
+      margin-top: 20px;
+      background: #f3f3f3;
+      padding: 16px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <header>
+    <h1>Perhitungan Muatan Listrik</h1>
+
+    <!-- Tambahkan container baru untuk search agar tidak mengganggu nav -->
+    <div class="search-container">
+      <div class="search-icon-wrapper" id="search-toggle">
+        <!-- icon search -->
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20"
+          fill="rgb(227, 227, 227)">
+          <path d="M0 0h24v24H0z" fill="none" />
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5
+              6.5 6.5 0 109.5 16c1.61 0 3.09-.59
+              4.23-1.57l.27.28v.79l5 4.99
+              L20.49 19l-4.99-5zm-6 0C8.01 14 6 11.99
+              6 9.5S8.01 5 10.5 5 15 7.01 15 9.5
+              12.99 14 10.5 14z" />
+        </svg>
+      </div>
+      <input type="text" class="search-input" placeholder="Cari sesuatu…" />
+    </div>
+  </header>
+
+  <!-- Navigasi dipisahkan dari header-right -->
+  <nav class="nav-left">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materi/kuat-arus-listrik/kuat-arus-listrik.html" class="active">Kuat Arus Listrik</a>
+      </li>
+      <li><a href="materi/gaya-coulomb/gaya-coulomb.html">Gaya Coulomb</a></li>
+      <li><a href="materi/muatan-listrik/muatan-listrik.html">Muatan Listrik</a></li>
+      <li><a href="materi/gaya-elektrostatis/gaya-elektrostatis.html">Gaya Elektrostatis</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="konten-tengah">
+      <div class="judul-gaya">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="#fcd361">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M12 4a8 8 0 0 1 8 8c0 1.849-.63 3.549-1.683 4.899l1.43 1.43a10 10 0 1 0-14.394 0l1.43-1.43A7.962 7.962 0 0 1 4 12a8 8 0 0 1 8-8zm0 2a6 6 0 0 0-6 6c0 1.481.535 2.839 1.422 3.899L12 13.414l4.578 2.485A5.98 5.98 0 0 0 18 12a6 6 0 0 0-6-6zm0 3a3 3 0 0 1 3 3c0 .617-.187 1.188-.507 1.663L12 11.828l-2.493 1.835A2.996 2.996 0 0 1 9 12a3 3 0 0 1 3-3z" />
+        </svg>
+        <h2>Kuat Arus Listrik</h2>
+      </div>
+
+      <p>Masukkan nilai berikut:</p>
+
+      <!-- 🔘 Tombol Pilihan -->
+      <div class="tab-selector">
+        <button onclick="showTab('kuat-arus')" class="tab-btn active">Kuat Arus</button>
+        <button onclick="showTab('muatan')" class="tab-btn">Muatan</button>
+        <button onclick="showTab('waktu')" class="tab-btn">Waktu</button>
+      </div>
+
+      <!-- Tab Kuat Arus -->
+      <div id="tab-kuat-arus" class="tab-content active">
+        <div class="input-section">
+          <div class="output-section hidden" id="output-kuat-arus">
+            <h3>Hasil:</h3>
+            <p id="hasil-kuat-arus"></p>
+          </div>
+
+          <label for="q-kuat">Muatan (Q):</label>
+          <div class="row-input">
+            <input type="number" id="q-kuat" placeholder="Masukkan Muatan Q">
+            <select id="qUnit-kuat">
+              <option value="C">C</option>
+              <option value="mC">mC</option>
+              <option value="μC" selected>μC</option>
+              <option value="nC">nC</option>
+            </select>
+          </div>
+
+          <label for="t-kuat">Waktu (t):</label>
+          <div class="row-input">
+            <input type="number" id="t-kuat" placeholder="Masukkan Waktu t">
+            <select id="tUnit-kuat">
+              <option value="s" selected>detik</option>
+              <option value="menit">menit</option>
+              <option value="jam">jam</option>
+            </select>
+          </div>
+
+          <button onclick="hitungKuatArus()">Hitung</button>
+          <button onclick="clearKuatArus()" style="margin-left: 10px; background-color: #999;">Clear</button>
+        </div>
+      </div>
+
+      <!-- Tab Muatan -->
+      <div id="tab-muatan" class="tab-content">
+        <div class="input-section">
+          <div class="output-section hidden" id="output-muatan">
+            <h3>Hasil:</h3>
+            <p id="hasil-muatan"></p>
+          </div>
+
+          <label for="i-muatan">Kuat Arus (I):</label>
+          <div class="row-input">
+            <input type="number" id="i-muatan" placeholder="Masukkan Kuat Arus I">
+            <select id="iUnit-muatan">
+              <option value="A">A</option>
+              <option value="mA">mA</option>
+            </select>
+          </div>
+
+          <label for="t-muatan">Waktu (t):</label>
+          <div class="row-input">
+            <input type="number" id="t-muatan" placeholder="Masukkan Waktu t">
+            <select id="tUnit-muatan">
+              <option value="s" selected>detik</option>
+              <option value="menit">menit</option>
+              <option value="jam">jam</option>
+            </select>
+          </div>
+
+          <button onclick="hitungMuatan()">Hitung</button>
+          <button onclick="clearMuatan()" style="margin-left: 10px; background-color: #999;">Clear</button>
+        </div>
+      </div>
+
+      <!-- Tab Waktu -->
+      <div id="tab-waktu" class="tab-content">
+        <div class="input-section">
+          <div class="output-section hidden" id="output-waktu">
+            <h3>Hasil:</h3>
+            <p id="hasil-waktu"></p>
+          </div>
+
+          <label for="q-waktu">Muatan (Q):</label>
+          <div class="row-input">
+            <input type="number" id="q-waktu" placeholder="Masukkan Muatan Q">
+            <select id="qUnit-waktu">
+              <option value="C">C</option>
+              <option value="mC">mC</option>
+              <option value="μC" selected>μC</option>
+              <option value="nC">nC</option>
+            </select>
+          </div>
+
+          <label for="i-waktu">Kuat Arus (I):</label>
+          <div class="row-input">
+            <input type="number" id="i-waktu" placeholder="Masukkan Kuat Arus I">
+            <select id="iUnit-waktu">
+              <option value="A">A</option>
+              <option value="mA">mA</option>
+            </select>
+          </div>
+
+          <button onclick="hitungWaktu()">Hitung</button>
+          <button onclick="clearWaktu()" style="margin-left: 10px; background-color: #999;">Clear</button>
+        </div>
+      </div>
+
+      <div class="output-section hidden" id="langkah-kuat-arus-section">
+        <h4 id="judulLangkahKuatArus">Cara Pengerjaan:</h4>
+        <div id="langkah-kuat-arus"></div>
+      </div>
+
+      <div class="output-section hidden" id="langkah-muatan-section">
+        <h4 id="judulLangkahMuatan">Cara Pengerjaan:</h4>
+        <div id="langkah-muatan"></div>
+      </div>
+
+      <div class="output-section hidden" id="langkah-waktu-section">
+        <h4 id="judulLangkahWaktu">Cara Pengerjaan:</h4>
+        <div id="langkah-waktu"></div>
+      </div>
+  </main>
+
+  <script>
+    function hitungKuatArus() {
+      const Q = parseFloat(document.getElementById("q-kuat").value);
+      const Qunit = document.getElementById("qUnit-kuat").value;
+      const t = parseFloat(document.getElementById("t-kuat").value);
+      const Tunit = document.getElementById("tUnit-kuat").value;
+
+      if (isNaN(Q) || isNaN(t)) {
+        alert("Isi semua nilai terlebih dahulu!");
+        return;
+      }
+
+      // Konversi Q ke Coulomb
+      let qC, qKonvStr;
+      switch (Qunit) {
+        case "mC":
+          qC = Q * 1e-3;
+          qKonvStr = `${Q} ${Qunit} = ${formatQIlmiah(Q, Qunit)}`;
+          break;
+        case "μC":
+          qC = Q * 1e-6;
+          qKonvStr = `${Q} ${Qunit} = ${formatQIlmiah(Q, Qunit)}`;
+          break;
+        case "nC":
+          qC = Q * 1e-9;
+          qKonvStr = `${Q} ${Qunit} = ${formatQIlmiah(Q, Qunit)}`;
+          break;
+        default:
+          qC = Q;
+          qKonvStr = `${formatCerdas(Q)} C`;
+      }
+
+      // Konversi waktu ke detik
+      let tSec, tKonvStr;
+      switch (Tunit) {
+        case "menit":
+          tSec = t * 60;
+          tKonvStr = `${t} menit = ${formatCerdas(tSec)} detik`;
+          break;
+        case "jam":
+          tSec = t * 3600;
+          tKonvStr = `${t} jam = ${formatCerdas(tSec)} detik`;
+          break;
+        default:
+          tSec = t;
+          tKonvStr = `${formatCerdas(tSec)} detik`;
+      }
+
+      // Hitung I
+      const I = qC / tSec;
+      const Idisplay = formatCerdas(I);
+
+      // Diketahui
+      const diketahui = `
+        <p><strong>Diketahui:</strong></p>
+        <div style="margin-bottom: 6pt">Q = ${qKonvStr}</div>
+        <div>t = ${tKonvStr}</div>
+      `;
+
+      // Langkah pengerjaan
+      const langkah = `
+        ${diketahui}
+
+        <p><strong>Rumus:</strong></p>
+        \\[ I = \\frac{Q}{t} \\]
+
+        <p><strong>Perhitungan:</strong></p>
+        \\[
+        \\begin{aligned}
+        I &= \\frac{${toMathJaxScientific(qC)}}{${formatCerdas(tSec)}} \\\\[6pt]
+          &= ${Idisplay}~\\text{A}
+        \\end{aligned}
+        \\]
+      `;
+
+      // Tampilkan hasil
+      document.getElementById("output-kuat-arus").classList.remove("hidden");
+      document.getElementById("hasil-kuat-arus").innerHTML = `\\[ I = ${Idisplay}~\\text{A} \\]`;
+      document.getElementById("langkah-kuat-arus").innerHTML = langkah;
+
+      document.getElementById("langkah-kuat-arus-section").classList.remove("hidden");
+      document.getElementById("langkah-muatan-section").classList.add("hidden");
+      document.getElementById("langkah-waktu-section").classList.add("hidden");
+
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function toMathJaxScientific(val, digits = 4) {
+      if (val === 0) return "0";
+      const exp = Math.floor(Math.log10(Math.abs(val)));
+      const mantissa = (val / Math.pow(10, exp)).toFixed(digits - 1);
+      return `${mantissa} \\times 10^{${exp}}`;
+    }
+
+    function formatQIlmiah(nilai, satuan) {
+      let pangkat;
+      switch (satuan) {
+        case "mC": pangkat = "⁻³"; break;
+        case "μC": pangkat = "⁻⁶"; break;
+        case "nC": pangkat = "⁻⁹"; break;
+        default: return `${formatCerdas(nilai)} C`; // langsung tampilkan biasa
+      }
+      return `${formatCerdas(nilai)} × 10${pangkat} C`;
+    }
+
+    function formatCerdas(angka) {
+      // Bilangan >= 1
+      if (Math.abs(angka) >= 1) {
+        return Number.isInteger(angka) ? angka.toString() : angka.toFixed(3);
+      }
+
+      // Bilangan kecil, cek jika cukup ditampilkan biasa
+      if (Math.abs(angka) >= 0.0001) {
+        const significant = parseFloat(angka.toPrecision(3));
+        return significant.toString();
+      }
+
+      // Kalau terlalu kecil, gunakan notasi ilmiah dengan pangkat unicode
+      const str = angka.toExponential(3); // contoh: 4.25e-4
+      const [mantissa, exp] = str.split('e');
+      const expInt = parseInt(exp, 10);
+      return `${parseFloat(mantissa)} × 10${superscript(expInt)}`;
+    }
+
+    function superscript(exp) {
+      const supers = {
+        "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³",
+        "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹"
+      };
+      return exp.toString().split("").map(c => supers[c] || "").join("");
+    }
+
+    function clearKuatArus() {
+      document.getElementById("q-kuat").value = "";
+      document.getElementById("t-kuat").value = "";
+      document.getElementById("output-kuat-arus").classList.add("hidden");
+      document.getElementById("hasil-kuat-arus").innerHTML = "";
+
+      // Tambahan: clear langkah pengerjaan
+      document.getElementById("langkah-kuat-arus-section").classList.add("hidden");
+      document.getElementById("langkah-kuat-arus").innerHTML = "";
+    }
+  </script>
+
+  <script>
+    // ✅ Fungsi hitungMuatan()
+    function hitungMuatan() {
+      const I = parseFloat(document.getElementById("i-muatan").value);
+      const Iunit = document.getElementById("iUnit-muatan").value;
+      const t = parseFloat(document.getElementById("t-muatan").value);
+      const Tunit = document.getElementById("tUnit-muatan").value;
+
+      if (isNaN(I) || isNaN(t)) {
+        alert("Isi semua nilai terlebih dahulu!");
+        return;
+      }
+
+      let Iamp = (Iunit === "mA") ? I * 1e-3 : I;
+      let Idisplay = (Iunit === "mA") ? `${I} mA = ${formatCerdas(Iamp)} A` : `${formatCerdas(I)} A`;
+
+      let tSec;
+      let tDisplay = "";
+      switch (Tunit) {
+        case "menit": tSec = t * 60; tDisplay = `${t} menit = ${formatCerdas(tSec)} detik`; break;
+        case "jam": tSec = t * 3600; tDisplay = `${t} jam = ${formatCerdas(tSec)} detik`; break;
+        default: tSec = t; tDisplay = `${formatCerdas(tSec)} detik`;
+      }
+
+      const Q = Iamp * tSec;
+
+      const diketahui = `
+        <p><strong>Diketahui:</strong></p>
+        <div style="margin-bottom: 6pt">I = ${Idisplay}</div>
+        <div>t = ${tDisplay}</div>
+      `;
+
+      const langkah = `
+        ${diketahui}
+        <p><strong>Rumus:</strong></p>
+        \\[ Q = I \\times t \\]
+
+        <p><strong>Perhitungan:</strong></p>
+        \\[ \\begin{aligned}
+        Q &= ${formatCerdas(Iamp)} \\times ${formatCerdas(tSec)} \\\\[6pt]
+          &= ${formatCerdas(Q)}~\\text{C}
+        \\end{aligned} \\]
+      `;
+
+      document.getElementById("output-muatan").classList.remove("hidden");
+      document.getElementById("hasil-muatan").innerHTML = `\\[ Q = ${formatCerdas(Q)}~\\text{C} \\]`;
+      document.getElementById("langkah-muatan").innerHTML = langkah;
+
+      document.getElementById("langkah-muatan-section").classList.remove("hidden");
+      document.getElementById("langkah-kuat-arus-section").classList.add("hidden");
+      document.getElementById("langkah-waktu-section").classList.add("hidden");
+
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function formatCerdas(angka) {
+      if (Math.abs(angka) >= 1) {
+        return Number.isInteger(angka) ? angka.toString() : angka.toFixed(3);
+      }
+
+      // Cek jumlah angka nol setelah koma
+      const str = angka.toExponential(3); // contoh: 3.42e-4
+      const [mantissa, exp] = str.split('e');
+      const expInt = parseInt(exp, 10);
+
+      // Angka yang lebih kecil dari 0.001 (misal 0.000342) langsung pakai notasi ilmiah
+      return `${parseFloat(mantissa)} × 10${superscript(expInt)}`;
+    }
+
+    function superscript(exp) {
+      const supers = {
+        "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³",
+        "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹"
+      };
+      return exp.toString().split("").map(c => supers[c] || "").join("");
+    }
+
+    function clearMuatan() {
+      document.getElementById("i-muatan").value = "";
+      document.getElementById("t-muatan").value = "";
+      document.getElementById("output-muatan").classList.add("hidden");
+      document.getElementById("hasil-muatan").innerHTML = "";
+
+      // Tambahan:
+      document.getElementById("langkah-muatan-section").classList.add("hidden");
+      document.getElementById("langkah-muatan").innerHTML = "";
+    }
+  </script>
+
+  <script>
+    function hitungWaktu() {
+      const Q = parseFloat(document.getElementById("q-waktu").value);
+      const Qunit = document.getElementById("qUnit-waktu").value;
+      const I = parseFloat(document.getElementById("i-waktu").value);
+      const Iunit = document.getElementById("iUnit-waktu").value;
+
+      if (isNaN(Q) || isNaN(I)) {
+        alert("Isi semua nilai terlebih dahulu!");
+        return;
+      }
+
+      let qC, qDisplay;
+      switch (Qunit) {
+        case "mC": qC = Q * 1e-3; qDisplay = `${Q} mC = ${formatQIlmiah(Q, Qunit)}`; break;
+        case "μC": qC = Q * 1e-6; qDisplay = `${Q} μC = ${formatQIlmiah(Q, Qunit)}`; break;
+        case "nC": qC = Q * 1e-9; qDisplay = `${Q} nC = ${formatQIlmiah(Q, Qunit)}`; break;
+        default: qC = Q; qDisplay = `${formatCerdas(Q)} C`;
+      }
+
+      let Iamp = (Iunit === "mA") ? I * 1e-3 : I;
+      let Idisplay = (Iunit === "mA") ? `${I} mA = ${formatCerdas(Iamp)} A` : `${formatCerdas(I)} A`;
+
+      const t = qC / Iamp;
+
+      const diketahui = `
+        <p><strong>Diketahui:</strong></p>
+        <div style="margin-bottom: 6pt">Q = ${qDisplay}</div>
+        <div>I = ${Idisplay}</div>
+      `;
+
+      const langkah = `
+        ${diketahui}
+        <p><strong>Rumus:</strong></p>
+        \\[ t = \\frac{Q}{I} \\]
+
+        <p><strong>Perhitungan:</strong></p>
+        \\[ \\begin{aligned}
+        t &= \\frac{${formatCerdas(qC)}}{${formatCerdas(Iamp)}} \\\\[6pt]
+          &= ${formatCerdas(t)}~\\text{detik}
+        \\end{aligned} \\]
+      `;
+
+      document.getElementById("output-waktu").classList.remove("hidden");
+      document.getElementById("hasil-waktu").innerHTML = `\\[ t = ${formatCerdas(t)}~\\text{detik} \\]`;
+      document.getElementById("langkah-waktu").innerHTML = langkah;
+
+      document.getElementById("langkah-waktu-section").classList.remove("hidden");
+      document.getElementById("langkah-kuat-arus-section").classList.add("hidden");
+      document.getElementById("langkah-muatan-section").classList.add("hidden");
+
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function formatQIlmiah(nilai, satuan) {
+      let qC;
+      switch (satuan) {
+        case "mC": qC = nilai * 1e-3; break;
+        case "μC": qC = nilai * 1e-6; break;
+        case "nC": qC = nilai * 1e-9; break;
+        default: return `${formatCerdas(nilai)} C`;
+      }
+      return `${formatCerdas(qC)} C`;
+    }
+
+    function formatCerdas(angka) {
+      if (Math.abs(angka) >= 1) {
+        return Number.isInteger(angka) ? angka.toString() : angka.toFixed(3);
+      }
+
+      // Cek jumlah angka nol setelah koma
+      const str = angka.toExponential(3); // contoh: 3.42e-4
+      const [mantissa, exp] = str.split('e');
+      const expInt = parseInt(exp, 10);
+
+      // Angka yang lebih kecil dari 0.001 (misal 0.000342) langsung pakai notasi ilmiah
+      return `${parseFloat(mantissa)} × 10${superscript(expInt)}`;
+    }
+
+    function superscript(exp) {
+      const supers = {
+        "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³",
+        "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹"
+      };
+      return exp.toString().split("").map(c => supers[c] || "").join("");
+    }
+
+    function clearWaktu() {
+      document.getElementById("q-waktu").value = "";
+      document.getElementById("i-waktu").value = "";
+      document.getElementById("output-waktu").classList.add("hidden");
+      document.getElementById("hasil-waktu").innerHTML = "";
+
+      // Tambahan:
+      document.getElementById("langkah-waktu-section").classList.add("hidden");
+      document.getElementById("langkah-waktu").innerHTML = "";
+    }
+  </script>
+
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <script>
+    function showTab(id) {
+      document.getElementById("langkah-kuat-arus-section").classList.add("hidden");
+      document.getElementById("langkah-muatan-section").classList.add("hidden");
+      document.getElementById("langkah-waktu-section").classList.add("hidden");
+
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById("tab-" + id).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+
+</body>
+
+</html>

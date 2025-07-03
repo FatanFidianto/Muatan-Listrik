@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perhitungan Muatan Listrik</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+    @font-face {
+      font-family: 'Futura Std Medium';
+      src: url('fonts/Futura Std Medium.ttf') format('opentype');
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Futura Std Medium', sans-serif;
+      color: #fff;
+      background: linear-gradient(160deg, #000022 0%, #000000 100%);
+    }
+
+    header {
+      background: #1c1c1c;
+      color: #fff;
+
+      padding: 20px 0 16px 10px;
+      /* atas saja, kiri dan kanan diberi 0 */
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header::after {
+      content: none;
+    }
+
+    header h1 {
+      margin-bottom: 20px;
+      padding-left: 20px;
+      font-family: 'Futura Std Medium', sans-serif;
+      color: #fcd361;
+    }
+
+    .header-right {
+      flex-grow: 1;
+      text-align: right;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 20px;
+    }
+
+    .search-icon-wrapper {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    .search-icon-wrapper svg {
+      fill: #ffffff;
+    }
+
+    .search-input {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+      background: #ffffff;
+      color: #000000;
+      font-size: 14px;
+    }
+
+    .nav-left ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      background: #111133;
+      display: flex;
+      align-items: flex-end;
+      width: 100%;
+      height: 40px;
+    }
+
+    .nav-left ul li {
+      flex-grow: 1;
+    }
+
+    .nav-left ul li a {
+      color: #fff7d9;
+      padding: 15px 20px;
+      text-decoration: none;
+      display: block;
+      font-family: 'Futura Std Medium', sans-serif;
+
+      background: #1c1c1c;
+      /* warna kotak */
+      color: #ffffff;
+
+      transform: translateY(0);
+      transition: transform 0.5s ease, background 0.5s ease, color 0.5s ease;
+
+      border-bottom: 4px solid #fff7d9;
+
+      /* diberi rounding tapi kaku */
+      border-radius: 0 0 20px 20px;
+
+      border-right: 1px solid #1c1c1c;
+
+      text-align: center;
+    }
+
+    /* Menghilangkan garis di sebelah kanan terakhir */
+    .nav-left ul li:last-child a {
+      border-right: none;
+    }
+
+    .nav-left ul li a:hover {
+      transform: translateY(10px);
+      background: #1c1c1c;
+      color: #fff7d9;
+      border-bottom: 4px solid #fcd361;
+      animation: glow-flicker 0.8s infinite;
+    }
+
+    /* Navbar yang aktif diberi garis bawah orange */
+    .nav-left ul li a.active {
+      background: #1c1c1c;
+      color: #fff7d9;
+      transform: translateY(10px);
+      border-bottom: 4px solid #fcd361;
+      animation: glow-flicker 0.8s infinite;
+    }
+
+    @keyframes glow-flicker {
+
+      0%,
+      100% {
+        text-shadow: 0 0 10px orange, 0 0 20px orange, 0 0 30px orange;
+      }
+
+      50% {
+        text-shadow: 0 0 2px orange, 0 0 5px orange, 0 0 10px orange;
+      }
+    }
+
+    /* Animasi saat berganti halaman */
+    body {
+      animation: fadeIn 0.7s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    main {
+      padding: 40px 0;
+      /* hanya atas-bawah */
+      font-family: 'Futura Std Medium', sans-serif;
+      background: #000000;
+      color: #ffffff;
+      min-height: 600px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .input-section {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      color: #fff;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      margin: 20px auto;
+    }
+
+    .input-section label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .input-section input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 10px;
+    }
+
+    .input-section button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #fcd361;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .output-section {
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 700px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      margin: 20px auto;
+    }
+
+    .output-section.hidden {
+      display: none;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0 12px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .konten-tengah {
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.02);
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(252, 211, 97, 0.08);
+    }
+
+    .input-section,
+    .output-section {
+      margin: 20px auto;
+      text-align: left;
+    }
+
+    .row-input {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .row-input input {
+      flex-grow: 1;
+      min-width: 0;
+      padding: 10px;
+      height: 17px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .row-input select {
+      width: 90px;
+    }
+
+    .judul-gaya {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .judul-gaya h2 {
+      font-size: 36px;
+      color: #fcd361;
+      margin: 0;
+    }
+
+    .soal-section {
+      background: none;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px auto;
+      margin-left: 10px;
+      max-width: 700px;
+      color: #fff;
+      box-shadow: none;
+      text-align: left;
+      position: relative;
+    }
+
+    .soal-section textarea {
+      width: 103%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+      font-size: 15px;
+      resize: vertical;
+      background-color: #fff;
+      color: #000;
+    }
+
+    .soal-section button {
+      margin-top: 3px;
+      padding: 10px 20px;
+      background: #fcd361;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .soal-section .unggah-toggle-wrapper {
+      position: absolute;
+      right: -20px;
+      top: 150px;
+      margin: 10px 0 0 0;
+      max-width: 700px;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 3px;
+    }
+
+    .soal-section button.unggah-toggle {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 2px solid #fcd361;
+      border-radius: 8px;
+      padding: 6px 12px;
+      background: transparent;
+      color: #fcd361;
+      cursor: pointer;
+      font-family: 'Futura Std Medium', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .soal-section button.unggah-toggle svg {
+      fill: currentColor;
+      transition: transform 0.3s ease, fill 0.3s ease;
+    }
+
+    .soal-section button.unggah-toggle:hover {
+      background: #fcd361;
+      color: #000;
+    }
+
+    .soal-section button.unggah-toggle:hover svg {
+      transform: translateY(-2px);
+      fill: #000;
+    }
+
+    .unggah-box {
+      margin-top: 10px;
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px dashed #fcd361;
+      text-align: center;
+
+      width: 100%;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .upload-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .upload-area input[type="file"] {
+      display: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .tab-selector {
+      display: flex;
+      gap: 5px;
+      margin-bottom: -20px;
+      margin-top: 20px;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 400px;
+      /* samakan dengan .input-section */
+      padding-left: 0;
+    }
+
+    .tab-btn {
+      background: transparent;
+      color: #fcd361;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px 10px 0 0;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      font-family: 'Futura Std Medium', sans-serif;
+    }
+
+    .tab-btn:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background-color: #222;
+      /* samakan dengan .input-section */
+      color: #fff;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-content {
+      display: none;
+      background-color: #222;
+      padding: 0;
+      border-radius: 12px 0 12px 12px;
+      box-shadow: 0 0 10px rgba(252, 211, 97, 0.08);
+      margin-top: 0;
+      max-width: 430px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .penjelasan-langkah {
+      margin-top: 20px;
+      background: #f3f3f3;
+      padding: 16px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: stretch;
+      /* ❗ biar tinggi input & satuan sama persis */
+      margin-bottom: 0.5rem;
+      max-width: 800px;
+      /* 💡 atur sesuai ukuran Q di bawah */
+    }
+
+    .input-field {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      border: 1px solid #ccc;
+      border-right: none;
+      border-radius: 6px 0 0 6px;
+      background-color: rgb(244, 244, 244);
+      color: black;
+      height: 35px;
+      margin-right: 10px;
+      box-sizing: border-box;
+    }
+
+    .input-satuan {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.81rem;
+      background-color: rgb(255, 255, 255);
+      color: black;
+      border: 1px solid #ccc;
+      border-left: none;
+      border-radius: 6px 6px 6px 6px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-width: 70px;
+      box-sizing: border-box;
+      margin-top: 6px;
+      margin-left: 10px;
+    }
+
+    .mode-select-wrapper {
+      display: flex;
+      justify-content: stretch;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .mode-select {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: rgb(241, 241, 241);
+      color: black;
+      box-sizing: border-box;
+      height: 36px;
+    }
+
+    .math-kiri mjx-container[jax="CHTML"][display="true"] {
+      justify-content: flex-start !important;
+      text-align: left !important;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <header>
+    <h1>Perhitungan Muatan Listrik</h1>
+
+    <!-- Tambahkan container baru untuk search agar tidak mengganggu nav -->
+    <div class="search-container">
+      <div class="search-icon-wrapper" id="search-toggle">
+        <!-- icon search -->
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20"
+          fill="rgb(227, 227, 227)">
+          <path d="M0 0h24v24H0z" fill="none" />
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5
+              6.5 6.5 0 109.5 16c1.61 0 3.09-.59
+              4.23-1.57l.27.28v.79l5 4.99
+              L20.49 19l-4.99-5zm-6 0C8.01 14 6 11.99
+              6 9.5S8.01 5 10.5 5 15 7.01 15 9.5
+              12.99 14 10.5 14z" />
+        </svg>
+      </div>
+      <input type="text" class="search-input" placeholder="Cari sesuatu…" />
+    </div>
+  </header>
+
+  <!-- Navigasi dipisahkan dari header-right -->
+  <nav class="nav-left">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materi/kuat-arus-listrik/kuat-arus-listrik.html">Kuat Arus Listrik</a></li>
+      <li><a href="materi/gaya-coulomb/gaya-coulomb.html">Gaya Coulomb</a></li>
+      <li><a href="materi/muatan-listrik/muatan-listrik.html" class="active">Muatan Listrik</a></li>
+      <li><a href="materi/gaya-elektrostatis/gaya-elektrostatis.html">Gaya Elektrostatis</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="konten-tengah">
+      <div class="judul-gaya">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="#fcd361">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M12 4a8 8 0 0 1 8 8c0 1.849-.63 3.549-1.683 4.899l1.43 1.43a10 10 0 1 0-14.394 0l1.43-1.43A7.962 7.962 0 0 1 4 12a8 8 0 0 1 8-8zm0 2a6 6 0 0 0-6 6c0 1.481.535 2.839 1.422 3.899L12 13.414l4.578 2.485A5.98 5.98 0 0 0 18 12a6 6 0 0 0-6-6zm0 3a3 3 0 0 1 3 3c0 .617-.187 1.188-.507 1.663L12 11.828l-2.493 1.835A2.996 2.996 0 0 1 9 12a3 3 0 0 1 3-3z" />
+        </svg>
+        <h2>Muatan Listrik</h2>
+      </div>
+
+      <p>Masukkan nilai berikut:</p>
+
+      <!-- 🔘 Tombol Pilihan -->
+      <div class="tab-selector">
+        <!-- tambahkan 'event' ke parameter onclick -->
+        <button onclick="showTab('muatan', event)" class="tab-btn active">Muatan</button>
+        <button onclick="showTab('jarak', event)" class="tab-btn">Jarak</button>
+      </div>
+
+      <!-- Tab Muatan -->
+      <!-- ✅ HTML lengkap dengan 3 mode pilihan: Masing-masing Q, Hitung Q1, Hitung Q2 -->
+      <div id="tab-muatan" class="tab-content active">
+        <div class="input-section">
+          <div class="output-section hidden" id="output-muatan">
+            <h3>Hasil:</h3>
+            <p id="hasil-muatan"></p>
+          </div>
+
+          <div class="output-section hidden" id="output-q1">
+            <h3>Hasil:</h3>
+            <p id="hasil-q1"></p>
+          </div>
+
+          <div class="output-section hidden" id="output-q2">
+            <h3>Hasil:</h3>
+            <p id="hasil-q2"></p>
+          </div>
+
+          <label for="mode-utama">Pilih yang ingin dihitung:</label>
+          <select id="mode-utama" onchange="tampilkanForm()">
+            <option value="masing">Masing-masing Q</option>
+            <option value="q1">Hitung muatan Q₁</option>
+            <option value="q2">Hitung muatan Q₂</option>
+          </select>
+
+          <!-- Masing-masing Q -->
+          <div id="form-masing" class="mode-form">
+            <label for="f-muatan">Gaya F</label>
+            <div class="input-group">
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <!-- Input angka dasar -->
+                <input type="number" id="f-muatan" placeholder="Masukkan jarak F"
+                  style="padding: 8px; border-radius: 8px; border: 1px solid #444; font-size: 0.85rem; width: 135px; height: 18px;">
+
+                <!-- Input eksponen dalam satu kotak dengan label -->
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid #444;
+                    border-radius: 8px;
+                    background: white;
+                    overflow: hidden;
+                    height: 34px;
+                    margin-top: -5px;
+                  ">
+                  <div style="
+                    font-size: 0.81rem;
+                    color: black;
+                    padding: 0 8px;
+                    border-right: 1px solid #ccc;
+                  ">
+                    ×10^
+                  </div>
+                  <input type="number" id="f-muatan-pangkat" placeholder="Isi pangkat" style="
+                      border: none;
+                      padding: 10px 6px 6px 6px;
+                      width: 100px;
+                      outline: none;
+                      text-align: left;
+                      font-size: 0.85rem;
+                    ">
+                </div>
+              </div>
+              <div class="input-satuan">N</div>
+            </div>
+
+            <label for="r-muatan">Jarak r</label>
+            <div class="row-input">
+              <input type="number" id="r-muatan" step="any" placeholder="Masukkan jarak r">
+              <select id="rUnit-muatan">
+                <option value="m">m</option>
+                <option value="cm" selected>cm</option>
+                <option value="mm">mm</option>
+              </select>
+            </div>
+
+            <label for="qsum">Muatan Q</label>
+            <div class="row-input">
+              <input type="number" id="qsum" step="any" placeholder="Masukkan muatan Q">
+              <select id="qsum-unit">
+                <option value="C">C</option>
+                <option value="mC">mC</option>
+                <option value="μC" selected>μC</option>
+                <option value="nC">nC</option>
+              </select>
+            </div>
+
+            <label for="mode-q">Keterangan</label>
+            <div class="mode-select-wrapper">
+              <select id="mode-q" class="mode-select">
+                <option value="plus">Q₁ + Q₂</option>
+                <option value="minus">Q₁ - Q₂</option>
+              </select>
+            </div>
+
+            <button onclick="hitungMasingMasingQForm()">Hitung</button>
+            <button onclick="clearMuatanListrik()" style="margin-left: 10px; background-color: #999;">Clear</button>
+          </div>
+
+          <!-- Hitung Q1 -->
+          <div id="form-q1" class="mode-form hidden">
+            <label for="f-q1">Gaya F</label>
+            <div class="input-group">
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <!-- Input angka dasar -->
+                <input type="number" id="f-muatan-q1" placeholder="Masukkan jarak F"
+                  style="padding: 8px; border-radius: 8px; border: 1px solid #444; font-size: 0.85rem; width: 135px; height: 18px;">
+
+                <!-- Input eksponen dalam satu kotak dengan label -->
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid #444;
+                    border-radius: 8px;
+                    background: white;
+                    overflow: hidden;
+                    height: 34px;
+                    margin-top: -5px;
+                  ">
+                  <div style="
+                    font-size: 0.81rem;
+                    color: black;
+                    padding: 0 8px;
+                    border-right: 1px solid #ccc;
+                  ">
+                    ×10^
+                  </div>
+                  <input type="number" id="f-muatan-pangkat-q1" placeholder="Isi pangkat" style="
+                      border: none;
+                      padding: 10px 6px 6px 6px;
+                      width: 100px;
+                      outline: none;
+                      text-align: left;
+                      font-size: 0.85rem;
+                    ">
+                </div>
+              </div>
+              <div class="input-satuan">N</div>
+            </div>
+
+            <label for="r-q1">Jarak r</label>
+            <div class="row-input">
+              <input type="number" id="r-q1" step="any" placeholder="Masukkan jarak r">
+              <select id="rUnit-q1">
+                <option value="m">m</option>
+                <option value="cm" selected>cm</option>
+                <option value="mm">mm</option>
+              </select>
+            </div>
+
+            <label for="q2-known">Muatan Q₂</label>
+            <div class="row-input">
+              <input type="number" id="q2-known" step="any" placeholder="Masukkan muatan Q₂">
+              <select id="q2Unit-q1">
+                <option value="C">C</option>
+                <option value="mC">mC</option>
+                <option value="μC" selected>μC</option>
+                <option value="nC">nC</option>
+              </select>
+            </div>
+
+            <button onclick="hitungQ1()">Hitung</button>
+            <button onclick="clearQ1()" style="margin-left: 10px; background-color: #999;">Clear</button>
+          </div>
+
+          <!-- Hitung Q2 -->
+          <div id="form-q2" class="mode-form hidden">
+            <label for="f-q2">Gaya F</label>
+            <div class="input-group">
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <!-- Input angka dasar -->
+                <input type="number" id="f-muatan-q2" placeholder="Masukkan jarak F"
+                  style="padding: 8px; border-radius: 8px; border: 1px solid #444; font-size: 0.85rem; width: 135px; height: 18px;">
+
+                <!-- Input eksponen dalam satu kotak dengan label -->
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid #444;
+                    border-radius: 8px;
+                    background: white;
+                    overflow: hidden;
+                    height: 34px;
+                    margin-top: -5px;
+                  ">
+                  <div style="
+                    font-size: 0.81rem;
+                    color: black;
+                    padding: 0 8px;
+                    border-right: 1px solid #ccc;
+                  ">
+                    ×10^
+                  </div>
+                  <input type="number" id="f-muatan-pangkat-q2" placeholder="Isi pangkat" style="
+                      border: none;
+                      padding: 10px 6px 6px 6px;
+                      width: 100px;
+                      outline: none;
+                      text-align: left;
+                      font-size: 0.85rem;
+                    ">
+                </div>
+              </div>
+              <div class="input-satuan">N</div>
+            </div>
+
+            <label for="r-q2">Jarak r</label>
+            <div class="row-input">
+              <input type="number" id="r-q2" step="any" placeholder="Masukkan jarak r">
+              <select id="rUnit-q2">
+                <option value="m">m</option>
+                <option value="cm" selected>cm</option>
+                <option value="mm">mm</option>
+              </select>
+            </div>
+
+            <label for="q1-known">Muatan Q₁</label>
+            <div class="row-input">
+              <input type="number" id="q1-known" step="any" placeholder="Masukkan muatan Q₁">
+              <select id="q1Unit-q2">
+                <option value="C">C</option>
+                <option value="mC">mC</option>
+                <option value="μC" selected>μC</option>
+                <option value="nC">nC</option>
+              </select>
+            </div>
+
+            <button onclick="hitungQ2()">Hitung</button>
+            <button onclick="clearQ2()" style="margin-left: 10px; background-color: #999;">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Jarak -->
+      <div id="tab-jarak" class="tab-content">
+        <div class="input-section">
+          <div class="output-section hidden" id="output-jarak">
+            <h3>Hasil:</h3>
+            <p id="hasil-jarak"></p>
+          </div>
+
+          <label for="F">Gaya F:</label>
+          <div class="input-group">
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <!-- Input angka dasar -->
+              <input type="number" id="f-muatan-jarak" placeholder="Masukkan jarak F"
+                style="padding: 8px; border-radius: 8px; border: 1px solid #444; font-size: 0.85rem; width: 135px; height: 18px;">
+
+              <!-- Input eksponen dalam satu kotak dengan label -->
+              <div style="
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid #444;
+                    border-radius: 8px;
+                    background: white;
+                    overflow: hidden;
+                    height: 34px;
+                    margin-top: -5px;
+                  ">
+                <div style="
+                    font-size: 0.81rem;
+                    color: black;
+                    padding: 0 8px;
+                    border-right: 1px solid #ccc;
+                  ">
+                  ×10^
+                </div>
+                <input type="number" id="f-muatan-pangkat-jarak" placeholder="Isi pangkat" style="
+                      border: none;
+                      padding: 10px 6px 6px 6px;
+                      width: 100px;
+                      outline: none;
+                      text-align: left;
+                      font-size: 0.85rem;
+                    ">
+              </div>
+            </div>
+            <div class="input-satuan">N</div>
+          </div>
+
+          <label for="q1">Muatan Q₁:</label>
+          <div class="row-input">
+            <input type="number" id="q1_jarak" placeholder="Masukkan Muatan Q₁">
+            <select id="q1_jarakUnit">
+              <option value="C">C</option>
+              <option value="mC">mC</option>
+              <option value="μC" selected>μC</option>
+              <option value="nC">nC</option>
+            </select>
+          </div>
+
+          <label for="q2">Muatan Q₂:</label>
+          <div class="row-input">
+            <input type="number" id="q2_jarak" placeholder="Masukkan Muatan Q₂">
+            <select id="q2_jarakUnit">
+              <option value="C">C</option>
+              <option value="mC">mC</option>
+              <option value="μC" selected>μC</option>
+              <option value="nC">nC</option>
+            </select>
+          </div>
+
+          <button onclick="hitungJarak()">Hitung</button>
+          <button onclick="clearJarak()" style="margin-left: 10px; background-color: #999;">Clear</button>
+        </div>
+      </div>
+
+      <div class="output-section hidden" id="langkah-muatan-section">
+        <h4>Cara Pengerjaan:</h4>
+        <div id="langkah-muatan"></div>
+      </div>
+
+      <div class="output-section hidden" id="langkah-q1-section">
+        <h4>Cara Pengerjaan:</h4>
+        <div id="langkah-q1"></div>
+      </div>
+
+      <div class="output-section hidden" id="langkah-q2-section">
+        <h4>Cara Pengerjaan:</h4>
+        <div id="langkah-q2"></div>
+      </div>
+
+      <div class="output-section hidden" id="langkah-jarak-section">
+        <h4>Cara Pengerjaan:</h4>
+        <div id="langkah-jarak"></div>
+      </div>
+  </main>
+
+  <script>
+    // ✅ Fungsi hitungMuatan()
+    function hitungMasingMasingQForm() {
+      const F = getInputGayaF("", true);
+      let F_display = `${toNotasiIlmiahString(F)}~\\text{N}`;
+      const F_dasar = parseFloat(document.getElementById("f-muatan").value);
+      const F_pangkat = parseInt(document.getElementById("f-muatan-pangkat").value);
+
+      const r = parseFloat(document.getElementById("r-muatan").value);
+      const rUnit = document.getElementById("rUnit-muatan").value;
+      const Qsum = parseFloat(document.getElementById("qsum").value);
+      const QsumUnit = document.getElementById("qsum-unit").value;
+      const mode = document.getElementById("mode-q").value;
+
+      const gayaKosong = F === null;
+      const rKosong = isNaN(r);
+      const qKosong = isNaN(Qsum);
+
+      // Cek kondisi kombinasi
+      if (gayaKosong && rKosong && qKosong) {
+        alert("Isi semua nilai terlebih dahulu!");
+        return;
+      }
+
+      if (gayaKosong) {
+        alert("Masukkan nilai gaya F!");
+        return;
+      }
+
+      if (rKosong) {
+        alert("Masukkan nilai jarak r!");
+        return;
+      }
+
+      if (qKosong) {
+        alert("Masukkan nilai muatan Q!");
+        return;
+      }
+
+      function konversiSatuanQ(nilai, satuan) {
+        switch (satuan) {
+          case "mC": return nilai * 1e-3;
+          case "μC": return nilai * 1e-6;
+          case "nC": return nilai * 1e-9;
+          default: return nilai;
+        }
+      }
+
+      function konversiSatuanJarak(nilai, satuan) {
+        switch (satuan) {
+          case "cm": return nilai / 100;
+          case "mm": return nilai / 1000;
+          case "m": return nilai;
+          default: return nilai;
+        }
+      }
+
+      const k = 9e9;
+
+      const rMeter = konversiSatuanJarak(r, rUnit);
+      const qTotalC = konversiSatuanQ(Qsum, QsumUnit);
+      const r2 = rMeter ** 2;
+
+      const Q1Q2 = (F * r2) / k;
+
+      // Persamaan kuadrat: x² - totalQ·x + Q1Q2 = 0
+      const a = 1;
+      const b = -qTotalC;
+      const c = Q1Q2;
+      const D = b * b - 4 * a * c;
+
+      const sqrtD = Math.sqrt(D < 0 ? 0 : D);
+
+      const a_k = mode === "plus" ? -k : k;
+      const b_kq = mode === "plus" ? k * qTotalC : -k * qTotalC;
+      const c_negFr2 = -F * r2;
+
+      const diskriminan = Math.pow(b_kq, 2) - 4 * a_k * c_negFr2;
+      const akarD = Math.sqrt(diskriminan);
+      const q1sol1 = (-b_kq + akarD) / (2 * a_k);
+      const q1sol2 = (-b_kq - akarD) / (2 * a_k);
+      let q2sol1, q2sol2;
+
+      if (mode === "plus") {
+        q2sol1 = qTotalC - q1sol1;
+        q2sol2 = qTotalC - q1sol2;
+      } else {
+        q2sol1 = q1sol1 - qTotalC;
+        q2sol2 = q1sol2 - qTotalC;
+      }
+
+      const tampilkanRKonversi = !isNaN(rMeter) && parseFloat(r) != rMeter;
+      const tampilkanQKonversi = !isNaN(qTotalC) && formatCerdas(Qsum) != toNotasiIlmiahString(qTotalC);
+
+      let q1 = q1sol1;
+      let q2 = q2sol1;
+
+      const hasil = `\\[ Q_1 = ${formatCerdas(q1)}~\\text{C}, \\quad Q_2 = ${formatCerdas(q2)}~\\text{C} \\]`;
+
+      const diketahui = `
+        <p><strong>Diketahui:</strong></p>
+        <p>F = \\(${F_display}\\)</p>
+        <p>
+        r = \\(${r}~${rUnit}${tampilkanRKonversi ? ` = ${formatCerdas(rMeter)}~\\text{m}` : ""}\\)
+        </p>
+
+        <div class="math-kiri">
+        \\[
+        \\begin{aligned}
+        ${mode === "plus"
+          ? `Q_1 + Q_2 &= ${formatCerdas(Qsum)}~\\text{${QsumUnit}}${tampilkanQKonversi ? ` = ${toNotasiIlmiahString(qTotalC)}~\\text{C}` : ""} \\\\[6pt]
+          \\quad Q_2 &= ${toNotasiIlmiahString(qTotalC)}~\\text{C} - Q_1`
+          : `Q_1 - Q_2 &= ${formatCerdas(Qsum)}~\\text{${QsumUnit}}${tampilkanQKonversi ? ` = ${toNotasiIlmiahString(qTotalC)}~\\text{C}` : ""} \\\\[6pt]
+          \\quad Q_2 &= Q_1 ${formatTandaMinusKurung(qTotalC)}~\\text{C}`}
+        \\end{aligned}
+        \\]
+        </div>
+
+        <p>k = \\( 9 \\times 10^9 \\mathrm{ Nm}^2/\\mathrm{C}^2 \\)</p>
+
+        <p><strong>Rumus:</strong></p>
+        \\[ F = k \\cdot \\frac{Q_1 Q_2}{r^2} \\]
+
+        <p><strong>Perhitungan:</strong></p>
+        \\[
+        \\begin{aligned}
+        F &= \\frac{k \\cdot Q_1 (${mode === "plus" ? "Q_{\\text{total}} - Q_1" : "Q_1 - Q_{\\text{total}}"})}{r^2} \\\\[6pt]
+        ${formatCerdas(F)} &= \\frac{9 \\times 10^9 \\cdot Q_1 (${mode === "plus" ? formatCerdas(qTotalC) + " - Q_1" : "Q_1 " + formatTandaMinusKurung(qTotalC)})}{${formatCerdas(rMeter)}^2} \\\\[6pt]
+        ${formatCerdas(F)} \\cdot ${formatCerdas(rMeter)}^2 &= 9 \\times 10^9 \\cdot Q_1 (${mode === "plus" ? formatCerdas(qTotalC) + " - Q_1" : "Q_1 " + formatTandaMinusKurung(qTotalC)}) \\\\[6pt]
+        ${formatCerdas(F)} \\cdot ${formatPresisi(r2)} &= 9 \\times 10^9 \\cdot Q_1 (${mode === "plus" ? `${formatCerdas(qTotalC)} - Q_1` : `Q_1 ${formatTandaMinusKurung(qTotalC)}`}) \\\\[6pt]
+        ${formatCerdas(F * r2)} &= 9 \\times 10^9 \\cdot (${mode === "plus" ? `${formatCerdas(qTotalC)} Q_1 - Q_1^2` : `Q_1^2 ${formatTandaMinusKurung(qTotalC)} Q_1`}) \\\\[6pt]
+        ${formatCerdas(F * r2)} &= ${mode === "plus"
+          ? `${toNotasiIlmiahPaksa(k * qTotalC)} Q_1 - 9 \\times 10^9 Q_1^2`
+          : `9 \\times 10^9 Q_1^2 ${formatTandaMinusKurung(k * qTotalC)} Q_1`} \\\\[6pt]
+        0 &= ${mode === "plus"
+          ? `-9 \\times 10^9 Q_1^2 ${formatWithSignCerdas(k * qTotalC)} Q_1 ${formatTandaMinusKurung(F * r2)}`
+          : `9 \\times 10^9 Q_1^2 ${formatTandaMinusKurung(k * qTotalC)} Q_1 ${formatTandaMinusKurung(F * r2)}`} \\\\[6pt]
+        0 &= a Q_1^2 + b Q_1 - c \\\\[12pt]
+        \\end{aligned}
+        \\]
+        <div style="border-top:1px solid #fff; margin:12px 0;"></div>
+        \\[
+        \\begin{aligned}
+        Q_1 &= \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a} \\\\[6pt]
+        Q_1 &= \\frac{-(${toNotasiIlmiahPaksa(b_kq)}) \\pm \\sqrt{(${toNotasiIlmiahPaksa(b_kq)})^2 - 4(${toNotasiIlmiahPaksa(a_k)})(${formatCerdas(c_negFr2)})}}{2(-9 \\times 10^9)} \\\\[6pt]
+        Q_1 &= \\frac{${formatNegatifMinusB(b_kq)} \\pm \\sqrt{${toNotasiIlmiahPaksa(b_kq ** 2)} ${formatTandaMinusKurung(4 * a_k * c_negFr2)}}}{${formatCerdas(2 * a_k)}} \\\\[6pt]
+        Q_1 &= \\frac{${formatNegatifMinusB(b_kq)} \\pm \\sqrt{${toNotasiIlmiahPaksa(diskriminan)}}}{${formatCerdas(2 * a_k)}} \\\\[6pt]
+        Q_1 &= \\frac{${formatNegatifMinusB(b_kq)} + ${toNotasiIlmiahPaksa(akarD)}}{${formatCerdas(2 * a_k)}} = \\frac{${toNotasiIlmiahPaksa(-b_kq + akarD)}}{${formatCerdas(2 * a_k)}} = ${formatCerdas(q1sol1)}~\\text{C} \\\\[6pt]
+            &= \\frac{${formatNegatifMinusB(b_kq)} - ${toNotasiIlmiahPaksa(akarD)}}{${formatCerdas(2 * a_k)}} = \\frac{${toNotasiIlmiahPaksa(-b_kq - akarD)}}{${formatCerdas(2 * a_k)}} = ${formatCerdas(q1sol2)}~\\text{C} \\\\[6pt]
+        Q_1 &= ${formatCerdas(q1sol1)}~\\text{C} \\quad \\text{atau} \\quad ${formatCerdas(q1sol2)}~\\text{C} \\\\[6pt]
+        Q_2 &= ${formatCerdas(q2sol1)}~\\text{C} \\quad \\text{atau} \\quad ${formatCerdas(q2sol2)}~\\text{C}
+        \\end{aligned}
+        \\]
+      `;
+
+      document.getElementById("output-muatan").classList.remove("hidden");
+      document.getElementById("hasil-muatan").innerHTML = hasil;
+      document.getElementById("langkah-muatan-section").classList.remove("hidden");
+      document.getElementById("langkah-muatan").innerHTML = diketahui; // 🔧 Ganti 'langkah' dengan 'diketahui'
+
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function getInputGayaF(suffix = "", silent = false) {
+      const dasarInput = document.getElementById("f-muatan" + suffix);
+      const pangkatInput = document.getElementById("f-muatan-pangkat" + suffix);
+
+      if (!dasarInput) return null;
+
+      const dasar = parseFloat(dasarInput.value);
+      const pangkatRaw = pangkatInput?.value.trim() ?? "";
+      const pangkat = pangkatRaw === "" ? null : parseInt(pangkatRaw);
+
+      if (isNaN(dasar)) {
+        if (!silent) alert("Masukkan angka dasar gaya F");
+        return null;
+      }
+
+      return pangkat === null || isNaN(pangkat)
+        ? dasar
+        : dasar * Math.pow(10, pangkat);
+    }
+
+    function formatTandaMinusKurung(val) {
+      if (val < 0) {
+        // -(-val) = + val
+        return "+ " + toNotasiIlmiahPaksa(Math.abs(val));
+      } else {
+        // -(+val) = - val
+        return "- " + toNotasiIlmiahPaksa(val);
+      }
+    }
+
+    function formatWithSignCerdas(val, reverse = false) {
+      const v = reverse ? -val : val;
+      const prefix = v >= 0 ? "+ " : "- ";
+      return prefix + toNotasiIlmiahPaksa(Math.abs(v));
+    }
+
+    function formatNegatifMinusB(val) {
+      if (val < 0) {
+        // -(-x) = +x → tampilkan dalam notasi ilmiah
+        return toNotasiIlmiahPaksa(-val);
+      } else {
+        // kalau b sudah positif → tampilkan -b
+        return "-" + toNotasiIlmiahPaksa(val);
+      }
+    }
+
+    function formatWithSign(val, reverse = false) {
+      const v = reverse ? -val : val;
+      const prefix = v >= 0 ? "+ " : "- ";
+      return prefix + toNotasiIlmiahPaksa(Math.abs(v));
+    }
+
+    function toNotasiIlmiahPaksa(val, digit = 4) {
+      const [mantissa, exponent] = val.toExponential(digit).split("e");
+      return `${parseFloat(mantissa)} \\times 10 ^ { ${parseInt(exponent)}}`;
+    }
+
+    function formatPresisi(val, digit = 4) {
+      return val.toFixed(digit);
+    }
+
+    function clearMuatanListrik() {
+      // 🔹 Kosongkan input angka dasar gaya F
+      const fMuatan = document.getElementById("f-muatan");
+      if (fMuatan) fMuatan.value = "";
+
+      // 🔹 Kosongkan input eksponen
+      const fPangkat = document.getElementById("f-muatan-pangkat");
+      if (fPangkat) fPangkat.value = "";
+
+      // 🔹 Kosongkan input jarak dan muatan
+      const rQ = document.getElementById("r-muatan");
+      if (rQ) rQ.value = "";
+
+      const qKnown = document.getElementById("qsum");
+      if (qKnown) qKnown.value = "";
+
+      // 🔹 Reset dropdown "Diketahui"
+      const keterangan = document.getElementById("keterangan");
+      if (keterangan) keterangan.selectedIndex = 0;
+
+      // 🔹 Reset dropdown satuan jarak dan muatan
+      const unitR = document.getElementById("rUnit-muatan");
+      if (unitR) unitR.selectedIndex = 0;
+
+      const unitQ = document.getElementById("qsum-unit");
+      if (unitQ) unitQ.selectedIndex = 0;
+
+      // 🔹 Kosongkan hasil & langkah pengerjaan
+      const hasil = document.getElementById("hasil-muatan");
+      const langkah = document.getElementById("langkah-muatan");
+      if (hasil) hasil.innerHTML = "";
+      if (langkah) langkah.innerHTML = "";
+
+      // 🔹 Sembunyikan blok hasil dan label langkah
+      const output = document.getElementById("output-muatan");
+      if (output) output.classList.add("hidden");
+
+      const langkahSection = document.getElementById("langkah-muatan-section");
+      if (langkahSection) langkahSection.classList.add("hidden");
+    }
+  </script>
+
+  <script>
+    function hitungQ1() {
+      const F = getInputGayaF("-q1", true);
+      const r = parseFloat(document.getElementById("r-q1").value);
+      const rUnit = document.getElementById("rUnit-q1").value;
+      const q2 = parseFloat(document.getElementById("q2-known").value);
+      const q2Unit = document.getElementById("q2Unit-q1").value;
+
+      const gayaKosong = F === null;
+      const rKosong = isNaN(r);
+      const qKosong = isNaN(q2);
+
+      if (gayaKosong && rKosong && qKosong) {
+        alert("Isi semua nilai terlebih dahulu!");
+        return;
+      }
+      if (gayaKosong) {
+        alert("Masukkan nilai gaya F!");
+        return;
+      }
+      if (rKosong) {
+        alert("Masukkan nilai jarak r!");
+        return;
+      }
+      if (qKosong) {
+        alert("Masukkan nilai muatan Q!");
+        return;
+      }
+
+      function konversiKeMeter(nilai, satuan) {
+        switch (satuan) {
+          case "cm": return nilai / 100;
+          case "mm": return nilai / 1000;
+          default: return nilai;
+        }
+      }
+
+      function konversiKeCoulomb(nilai, satuan) {
+        switch (satuan) {
+          case "mC": return nilai * 1e-3;
+          case "μC": return nilai * 1e-6;
+          case "nC": return nilai * 1e-9;
+          default: return nilai;
+        }
+      }
+
+      const k = 9e9;
+      const rMeter = konversiKeMeter(r, rUnit);
+      const q2C = konversiKeCoulomb(q2, q2Unit);
+
+      const r2 = rMeter ** 2;
+      const pembilang = F * r2;
+      const penyebut = k * q2C;
+      const q1 = pembilang / penyebut;
+
+      const deskripsiR = rUnit === "m"
+        ? `r = ${formatCerdas(r)} ~\\text{ m } `
+        : `r = ${r} ~${rUnit} = ${parseFloat((rMeter).toFixed(6))} ~\\text{ m } `;
+
+      const deskripsiQ2 = q2Unit === "C"
+        ? `Q_2 = ${formatCerdas(q2)} ~\\text{ C } `
+        : `Q_2 = ${formatCerdas(q2)} ~${q2Unit} = ${toNotasiIlmiahString(q2C)} ~\\text{ C } `;
+
+      const diketahui = `
+      <p> <strong>Diketahui:</strong></p>
+      <div style="margin-bottom:6pt;">\\( F = ${formatCerdas(F)}~\\text{N} \\)</div>
+      <div style="margin-bottom:6pt;">\\( ${deskripsiR} \\)</div>
+      <div style="margin-bottom:6pt;">\\( ${deskripsiQ2} \\)</div>
+      <div style="margin-bottom:6pt;">\\( k = 9 \\times 10^9~\\text{Nm}^2/\\text{C}^2 \\)</div>
+    `;
+
+      const hasil = `\\[Q_1 = ${formatCerdas(q1)}~\\text{ C } \\]`;
+      const langkah = `
+      ${diketahui}
+    <p><strong>Rumus:</strong></p>
+    \\[F = k \\cdot \\frac{ Q_1 Q_2 }{ r^ 2}  \\Rightarrow  Q_1 = \\frac{ F \\cdot r^ 2}{ k \\cdot Q_2 } \\]
+
+      <p> <strong>Perhitungan:</strong></p >
+    \\[
+      \\begin{aligned}
+      Q_1 &= \\frac{ ${formatCerdas(F)} \\cdot(${parseFloat(rMeter.toFixed(6))})^ 2}{ 9 \\times 10^ 9 \\cdot ${toNotasiIlmiahString(q2C)}} \\\\[6pt]
+      &= \\frac{ ${formatCerdas(F)} \\cdot ${formatCerdas(r2)}}{ ${toNotasiIlmiahPaksa(penyebut)}} \\\\[6pt]
+      &= \\frac{ ${toNotasiIlmiahPaksa(pembilang)}}{ ${toNotasiIlmiahPaksa(penyebut)}} \\\\[6pt]
+      &= ${formatCerdas(q1)}~\\text{ C }
+      \\end{aligned}
+      \\]
+    `;
+
+      document.getElementById("hasil-q1").innerHTML = hasil;
+      document.getElementById("langkah-q1").innerHTML = langkah;
+      document.getElementById("output-q1").classList.remove("hidden");
+      document.getElementById("langkah-q1-section").classList.remove("hidden");
+
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function toNotasiIlmiahString(val) {
+      const absVal = Math.abs(val);
+      if (absVal < 0.1 || absVal >= 1e6) {
+        const [mantissa, exponent] = val.toExponential(3).split("e");
+        return `${parseFloat(mantissa)} \\times 10 ^ { ${parseInt(exponent)}}`;
+      }
+      return parseFloat(val.toPrecision(3)).toString();
+    }
+
+    function clearQ1() {
+      // 🔸 Kosongkan input
+      document.getElementById("f-muatan-q1").value = "";
+      document.getElementById("f-muatan-pangkat-q1").value = "";
+      document.getElementById("r-q1").value = "";
+      document.getElementById("q2-known").value = "";
+
+      // 🔸 Reset satuan ke default (jika ada select)
+      if (document.getElementById("q2Unit-q1")) document.getElementById("q2Unit-q1").selectedIndex = 0;
+      if (document.getElementById("rUnit-q1")) document.getElementById("rUnit-q1").selectedIndex = 0;
+
+      // 🔸 Sembunyikan hasil & langkah
+      document.getElementById("output-q1").classList.add("hidden");
+      document.getElementById("hasil-q1").innerHTML = "";
+
+      document.getElementById("langkah-q1-section").classList.add("hidden");
+      document.getElementById("langkah-q1").innerHTML = "";
+    }
+  </script>
+
+  <script>
+    function hitungQ2() {
+      const F = getInputGayaF("-q2", true);
+      const r = parseFloat(document.getElementById("r-q2").value);
+      const rUnit = document.getElementById("rUnit-q2").value;
+      const q1 = parseFloat(document.getElementById("q1-known").value);
+      const q1Unit = document.getElementById("q1Unit-q2").value;
+
+      const gayaKosong = F === null;
+      const rKosong = isNaN(r);
+      const qKosong = isNaN(q1);
+
+      if (gayaKosong && rKosong && qKosong) {
+        alert("Isi semua nilai terlebih dahulu!");
+        return;
+      }
+      if (gayaKosong) {
+        alert("Masukkan nilai gaya F!");
+        return;
+      }
+      if (rKosong) {
+        alert("Masukkan nilai jarak r!");
+        return;
+      }
+      if (qKosong) {
+        alert("Masukkan nilai muatan Q!");
+        return;
+      }
+
+      function konversiKeMeter(nilai, satuan) {
+        switch (satuan) {
+          case "cm": return nilai / 100;
+          case "mm": return nilai / 1000;
+          default: return nilai;
+        }
+      }
+
+      function konversiKeCoulomb(nilai, satuan) {
+        switch (satuan) {
+          case "mC": return nilai * 1e-3;
+          case "μC": return nilai * 1e-6;
+          case "nC": return nilai * 1e-9;
+          default: return nilai;
+        }
+      }
+
+      const k = 9e9;
+      const rMeter = konversiKeMeter(r, rUnit);
+      const q1C = konversiKeCoulomb(q1, q1Unit);
+
+      const r2 = rMeter ** 2;
+      const pembilang = F * r2;
+      const penyebut = k * q1C;
+      const q2 = pembilang / penyebut;
+
+      const deskripsiR = rUnit === "m"
+        ? `r = ${formatCerdas(r)} ~\\text{ m } `
+        : `r = ${r} ~${rUnit} = ${parseFloat((rMeter).toFixed(6))} ~\\text{ m } `;
+
+      const deskripsiQ1 = q1Unit === "C"
+        ? `Q_1 = ${formatCerdas(q1)} ~\\text{ C } `
+        : `Q_1 = ${formatCerdas(q1)} ~${q1Unit} = ${toNotasiIlmiahString(q1C)} ~\\text{ C } `;
+
+      const diketahui = `
+      <p> <strong>Diketahui:</strong></p>
+      <div style="margin-bottom:6pt;">\\( F = ${formatCerdas(F)}~\\text{N} \\)</div>
+      <div style="margin-bottom:6pt;">\\( ${deskripsiR} \\)</div>
+      <div style="margin-bottom:6pt;">\\( ${deskripsiQ1} \\)</div>
+      <div style="margin-bottom:6pt;">\\( k = 9 \\times 10^9~\\text{Nm}^2/\\text{C}^2 \\)</div>
+    `;
+
+      const hasil = `\\[Q_2 = ${formatCerdas(q2)}~\\text{ C } \\]`;
+      const langkah = `
+      ${diketahui}
+    <p><strong>Rumus:</strong></p>
+    \\[F = k \\cdot \\frac{ Q_1 Q_2 }{ r^ 2}  \\Rightarrow  Q_2 = \\frac{ F \\cdot r^ 2}{ k \\cdot Q_1 } \\]
+
+      <p><strong>Perhitungan:</strong></p >
+    \\[
+      \\begin{aligned}
+      Q_2 &= \\frac{ ${formatCerdas(F)} \\cdot(${parseFloat((rMeter).toFixed(6))})^ 2}{ 9 \\times 10^ 9 \\cdot ${formatCerdas(q1C)}} \\\\[6pt]
+      &= \\frac{ ${formatCerdas(F)} \\cdot ${formatCerdas(r2)}}{ ${toNotasiIlmiahPaksa(penyebut)}} \\\\[6pt]
+      &= \\frac{ ${toNotasiIlmiahPaksa(pembilang)}}{ ${toNotasiIlmiahPaksa(penyebut)}} \\\\[6pt]
+      &= ${formatCerdas(q2)}~\\text{ C }
+      \\end{aligned}
+      \\]
+    `;
+
+      document.getElementById("hasil-q2").innerHTML = hasil;
+      document.getElementById("langkah-q2").innerHTML = langkah;
+      document.getElementById("output-q2").classList.remove("hidden");
+      document.getElementById("langkah-q2-section").classList.remove("hidden");
+
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function toNotasiIlmiahString(val) {
+      const absVal = Math.abs(val);
+      if (absVal < 0.1 || absVal >= 1e6) {
+        const [mantissa, exponent] = val.toExponential(3).split("e");
+        return `${parseFloat(mantissa)} \\times 10 ^ { ${parseInt(exponent)}}`;
+      }
+      return parseFloat(val.toPrecision(3)).toString();
+    }
+
+    function clearQ2() {
+      // 🔸 Kosongkan input
+      document.getElementById("f-muatan-q2").value = "";
+      document.getElementById("f-muatan-pangkat-q2").value = "";
+      document.getElementById("r-q2").value = "";
+      document.getElementById("q1-known").value = "";
+
+      // 🔸 Reset satuan ke default
+      if (document.getElementById("q1Unit-q2")) document.getElementById("q1Unit-q2").selectedIndex = 0;
+      if (document.getElementById("rUnit-q2")) document.getElementById("rUnit-q2").selectedIndex = 0;
+
+      // 🔸 Sembunyikan hasil & langkah
+      document.getElementById("output-q2").classList.add("hidden");
+      document.getElementById("hasil-q2").innerHTML = "";
+
+      document.getElementById("langkah-q2-section").classList.add("hidden");
+      document.getElementById("langkah-q2").innerHTML = "";
+    }
+  </script>
+
+  <script>
+    function hitungJarak() {
+      const q1Input = parseFloat(document.getElementById("q1_jarak").value);
+      const q2Input = parseFloat(document.getElementById("q2_jarak").value);
+      const gayaInput = getInputGayaF("-jarak", true);
+      const q1Unit = document.getElementById("q1_jarakUnit").value;
+      const q2Unit = document.getElementById("q2_jarakUnit").value;
+
+      const q1Kosong = isNaN(q1Input);
+      const q2Kosong = isNaN(q2Input);
+      const gayaKosong = gayaInput === null;
+
+      // ✅ Cek kondisi alert
+      if (q1Kosong && q2Kosong && gayaKosong) {
+        alert("Isi semua nilai terlebih dahulu!");
+        return;
+      }
+
+      if (q1Kosong || q2Kosong) {
+        alert("Masukkan nilai muatan Q!");
+        return;
+      }
+
+      if (gayaKosong) {
+        alert("Masukkan nilai gaya F!");
+        return;
+      }
+
+      const k = 9e9;
+      const q1C = konversiKeCoulomb(q1Input, q1Unit);
+      const q2C = konversiKeCoulomb(q2Input, q2Unit);
+      const hasilKaliQ = q1C * q2C;
+      const hasilKaliK = k * hasilKaliQ;
+      const hasilBagiF = hasilKaliK / gayaInput;
+      const akar = Math.sqrt(hasilBagiF);
+
+      if (!isFinite(akar)) {
+        alert("Perhitungan menghasilkan nilai tak valid. Periksa kembali input.");
+        return;
+      }
+
+      const deskripsiQ1 = `Q_1 = ${formatCerdas(q1Input)} ~${q1Unit} ` +
+        (q1Unit !== "C" ? ` = ${toNotasiIlmiahString(q1C)} ~\\text{ C } ` : "");
+
+      const deskripsiQ2 = `Q_2 = ${formatCerdas(q2Input)} ~${q2Unit} ` +
+        (q2Unit !== "C" ? ` = ${toNotasiIlmiahString(q2C)} ~\\text{ C } ` : "");
+
+      const hasil = `\\[r = ${formatCerdas(akar)}~\\text{ m } \\]`;
+      const diketahui = `
+      <p> <strong>Diketahui:</strong></p>
+  <div style="margin-bottom:6pt;">\\( ${deskripsiQ1} \\)</div>
+  <div style="margin-bottom:6pt;">\\( ${deskripsiQ2} \\)</div>
+  <div style="margin-bottom:6pt;">\\( F = ${formatCerdas(gayaInput)}~\\text{N} \\)</div>
+  <div style="margin-bottom:6pt;">\\( k = 9 \\times 10^9~\\text{Nm}^2/\\text{C}^2 \\)</div>
+    `;
+
+      const langkah = `
+  ${diketahui}
+    <p><strong>Rumus:</strong></p>
+    \\[F = k \\cdot \\frac{ Q_1 Q_2 }{ r^ 2}  \\Rightarrow  r = \\sqrt{ \\frac{ k \\cdot Q_1 Q_2 }{ F }} \\]
+
+    <p><strong>Perhitungan:</strong></p >
+    \\[\\begin{aligned}
+  r &= \\sqrt{ \\frac{ 9 \\times 10^ 9 \\cdot ${formatCerdas(q1C)} \\cdot ${formatCerdas(q2C)}}{ ${formatCerdas(gayaInput)}}} \\\\[6pt]
+      &= \\sqrt{ \\frac{ 9 \\times 10^ 9 \\cdot ${formatCerdas(hasilKaliQ)}}{ ${formatCerdas(gayaInput)}}} \\\\[6pt]
+      &= \\sqrt{ \\frac{ ${formatCerdas(hasilKaliK)}}{ ${formatCerdas(gayaInput)}}} \\\\[6pt]
+      &= \\sqrt{ ${formatCerdas(hasilBagiF)}} \\\\[6pt]
+      &= ${formatCerdas(akar)}~\\text{ m }
+      \\end{aligned} \\]
+`;
+
+
+      document.getElementById("hasil-jarak").innerHTML = hasil;
+      document.getElementById("langkah-jarak").innerHTML = langkah;
+      document.getElementById("output-jarak").classList.remove("hidden");
+      document.getElementById("langkah-jarak-section").classList.remove("hidden");
+
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function konversiKeCoulomb(nilai, satuan) {
+      switch (satuan) {
+        case "mC": return nilai * 1e-3;
+        case "μC": return nilai * 1e-6;
+        case "nC": return nilai * 1e-9;
+        default: return nilai;
+      }
+    }
+
+    function toNotasiIlmiahString(val) {
+      const absVal = Math.abs(val);
+      if (absVal < 0.1 || absVal >= 1e6) {
+        const [mantissa, exponent] = val.toExponential(3).split("e");
+        return `${parseFloat(mantissa)} \\times 10 ^ { ${parseInt(exponent)}}`;
+      }
+      return parseFloat(val.toPrecision(3)).toString();
+    }
+
+    function formatCerdas(val) {
+      const absVal = Math.abs(val);
+
+      // Kalau bilangan bulat & tidak besar → tampilkan apa adanya
+      if (Number.isInteger(val) && absVal < 1e6) {
+        return val.toString();
+      }
+
+      // Kalau nilainya sangat besar (>= 1 juta) atau sangat kecil (< 0.001) → tampilkan dalam notasi ilmiah
+      if (absVal >= 1e6 || absVal < 0.001) {
+        const [mantissa, exponent] = val.toExponential(3).split("e");
+        return `${parseFloat(mantissa)} \\times 10 ^ { ${parseInt(exponent)} }`;
+      }
+
+      // Sisanya tampilkan sebagai angka desimal biasa
+      return parseFloat(val.toPrecision(4)).toString();
+    }
+
+    function clearJarak() {
+      // ✅ Hapus input gaya F & pangkat khusus tab Jarak
+      document.getElementById("f-muatan-jarak").value = "";
+      document.getElementById("f-muatan-pangkat-jarak").value = "";
+
+      // Hapus input Q1 & Q2
+      document.getElementById("q1_jarak").value = "";
+      document.getElementById("q2_jarak").value = "";
+
+      // Reset satuan
+      document.getElementById("q1_jarakUnit").selectedIndex = 0;
+      document.getElementById("q2_jarakUnit").selectedIndex = 0;
+
+      // Hapus hasil & langkah
+      document.getElementById("hasil-jarak").innerHTML = "";
+      document.getElementById("langkah-jarak").innerHTML = "";
+
+      // Sembunyikan output
+      document.getElementById("output-jarak").classList.add("hidden");
+      document.getElementById("langkah-jarak-section").classList.add("hidden");
+    }
+  </script>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        packages: { '[+]': ['ams'] }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <script>
+    function showTab(id, event) {
+      // Sembunyikan semua tab
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+      // Nonaktifkan semua tombol
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      // Tampilkan tab yang dipilih
+      const selectedTab = document.getElementById("tab-" + id);
+      if (selectedTab) {
+        selectedTab.classList.add('active');
+      }
+
+      // Tandai tombol sebagai aktif
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      }
+
+      // Sembunyikan semua langkah pengerjaan
+      document.getElementById("langkah-kuat-arus-section")?.classList.add("hidden");
+      document.getElementById("langkah-muatan-section")?.classList.add("hidden");
+      document.getElementById("langkah-waktu-section")?.classList.add("hidden");
+    }
+  </script>
+
+  <script>
+    function konversiSatuanJarak(nilai, satuan) {
+      switch (satuan) {
+        case "cm": return nilai / 100;
+        case "mm": return nilai / 1000;
+        default: return nilai;
+      }
+    }
+
+    function konversiSatuanQ(nilai, satuan) {
+      switch (satuan) {
+        case "mC": return nilai * 1e-3;
+        case "μC": return nilai * 1e-6;
+        case "nC": return nilai * 1e-9;
+        default: return nilai;
+      }
+    }
+  </script>
+
+  <script>
+    function tampilkanForm() {
+      const mode = document.getElementById("mode-utama").value;
+
+      // Sembunyikan semua dulu
+      document.querySelectorAll(".mode-form").forEach(el => el.classList.add("hidden"));
+
+      // Tampilkan hanya form yang sesuai
+      if (mode === "masing") {
+        document.getElementById("form-masing").classList.remove("hidden");
+      } else if (mode === "q1") {
+        document.getElementById("form-q1").classList.remove("hidden");
+      } else if (mode === "q2") {
+        document.getElementById("form-q2").classList.remove("hidden");
+      }
+    }
+
+    // ✅ Pastikan fungsi ini dipanggil saat halaman selesai dimuat
+    window.addEventListener("DOMContentLoaded", tampilkanForm);
+  </script>
+
+</body>
+
+</html>

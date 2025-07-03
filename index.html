@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fisika Dasar 2A</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    @font-face {
+      font-family: 'Futura Std Medium';
+      src: url('fonts/Futura Std Medium.ttf') format('opentype');
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Futura Std Medium', sans-serif;
+      background-color: #000000;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    .hero,
+    .hero-section,
+    .pengertian-section,
+    header {
+      backface-visibility: hidden;
+      transform: translateZ(0);
+      will-change: opacity, transform;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 35px 40px;
+      background-color: transparent;
+      font-size: 14px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: none;
+      transition: transform 0.5s ease, padding 0.5s ease;
+    }
+
+    .nav-left,
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-left a,
+    .nav-right a {
+      text-decoration: none;
+      color: rgb(227, 227, 227);
+      transition: color 0.3s ease;
+    }
+
+    @keyframes icon-glow-flicker {
+
+      0%,
+      100% {
+        filter: drop-shadow(0 0 6px orange) drop-shadow(0 0 10px orange);
+      }
+
+      50% {
+        filter: drop-shadow(0 0 2px orange) drop-shadow(0 0 4px orange);
+      }
+    }
+
+    .nav-left a:hover svg,
+    .nav-right a:hover svg {
+      animation: icon-glow-flicker 0.8s infinite;
+      fill: #fff7d9;
+    }
+
+    .nav-left a .icon-home,
+    .nav-right a svg {
+      fill: rgb(227, 227, 227);
+      transition: fill 0.3s ease;
+    }
+
+    @keyframes glow-flicker {
+
+      0%,
+      100% {
+        text-shadow: 0 0 10px orange, 0 0 20px orange, 0 0 30px orange;
+      }
+
+      50% {
+        text-shadow: 0 0 2px orange, 0 0 5px orange, 0 0 10px orange;
+      }
+    }
+
+    .nav-left a:hover,
+    .nav-right a:hover {
+      color: #fff7d9;
+      animation: glow-flicker 0.8s infinite;
+    }
+
+    /* Main Section */
+    .hero {
+      display: flex;
+      height: 100vh;
+      background-color: #000000;
+      overflow: hidden;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .hero-video-wrapper {
+      flex: 1.5;
+      border-top-left-radius: 150px;
+      border-bottom-left-radius: 150px;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .hero-video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .title-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .hero-text {
+      flex: 1;
+      padding: 5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-text h1 {
+      font-size: 48px;
+      font-weight: bold;
+    }
+
+    .hero-text h2 {
+      font-size: 36px;
+      font-weight: normal;
+    }
+
+    .hero-text .price {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .hero-text .price span {
+      font-size: 72px;
+      font-weight: bold;
+    }
+
+    .simulasi-button {
+      padding: 12px 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background-color: transparent;
+      border: 2px solid white;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      width: fit-content;
+      max-width: 100px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .simulasi-button:hover {
+      color: rgb(255, 187, 84);
+      background-color: transparent;
+      animation: border-glow 1.2s infinite ease-in-out;
+      text-shadow: 0 0 5px #ffc400, 0 0 10px #ffb300;
+    }
+
+    .simulasi-button:hover span {
+      animation: text-glow 1s infinite ease-in-out;
+    }
+
+    @keyframes text-glow {
+
+      0%,
+      100% {
+        color: #fff7d9;
+        text-shadow: 0 0 5px #ffa600, 0 0 10px #ffae00;
+      }
+
+      50% {
+        color: #ffe27a;
+        text-shadow: 0 0 2px #ffa600;
+      }
+    }
+
+    @keyframes border-glow {
+      0% {
+        box-shadow: 0 0 3px #ffcc00;
+        border-color: #ffaa00;
+      }
+
+      50% {
+        box-shadow: 0 0 12px #ffab3d, 0 0 24px #ffb662;
+        border-color: #ffbb00;
+      }
+
+      100% {
+        box-shadow: 0 0 3px #ff9340;
+        border-color: #ffb300;
+      }
+    }
+
+    .hero-text h1 {
+      color: rgb(255, 239, 149);
+    }
+
+    .hero-text h2 {
+      color: #e2e2e2;
+    }
+
+    .electric-text {
+      font-size: 72px;
+      color: #ffb700;
+      text-shadow:
+        0 0 10px #ffffff,
+        0 0 20px #ffffff,
+        0 0 30px #ffffff,
+        0 0 40px #ffffff;
+      animation: flicker 2s infinite;
+      font-weight: bold;
+    }
+
+    /* Animasi nyala listrik */
+    @keyframes flicker {
+
+      0%,
+      19%,
+      21%,
+      23%,
+      25%,
+      54%,
+      56%,
+      100% {
+        text-shadow:
+          0 0 5px #ffa500,
+          0 0 10px #ff7300,
+          0 0 20px #ff7300,
+          0 0 40px #ff0000;
+      }
+
+      20%,
+      24%,
+      55% {
+        text-shadow: none;
+      }
+    }
+
+    /* Layout baru ketika Pengertian diklik */
+    body.pengertian-mode .hero {
+      display: none;
+    }
+
+    body.pengertian-mode header {
+      flex-direction: column;
+      align-items: flex-start;
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: 220px;
+      background-color: rgba(0, 0, 0, 0.85);
+      border-top-right-radius: 100px;
+      border-bottom-right-radius: 100px;
+      padding: 60px 30px;
+      transition: all 0.6s ease;
+      z-index: 1000;
+    }
+
+    body.pengertian-mode .nav-left,
+    body.pengertian-mode .nav-right {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 30px;
+    }
+
+    body.pengertian-mode .pengertian-section {
+      display: block;
+      animation: fadeInRight 1s ease forwards;
+    }
+
+    .pengertian-section {
+      display: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50px);
+      padding: 20px 40px 60px 2px;
+      min-height: 100vh;
+      background-color: #000;
+      color: #fff;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      background: linear-gradient(to right, #000000, #111111);
+      background: radial-gradient(circle at left, #1c1c1c, #000000);
+    }
+
+    .pengertian-content {
+      max-width: 1000px;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      line-height: 1.8;
+      padding-left: 5px;
+      padding-right: 5px;
+      margin-left: 0;
+      margin-right: 0;
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    .pengertian-content h2 {
+      font-size: 50px;
+      margin-top: 0;
+      padding-top: 0;
+      color: #ffcc00;
+      font-weight: bold;
+    }
+
+    .pengertian-content p {
+      margin-bottom: 16 px;
+      font-size: 18px;
+    }
+
+    /* Transisi saat keluar dari pengertian (kembali ke home) */
+    body.pengertian-leave .pengertian-section {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.6s ease;
+    }
+
+    /* Default (home) */
+    #main-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 35px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      transition: all 0.5s ease;
+      flex-direction: row;
+    }
+
+    body.pengertian-mode #main-header {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 140px;
+      height: 100vh;
+      border-top-right-radius: 70px;
+      border-bottom-right-radius: 70px;
+      background-color: #222;
+      padding: 40px 20px;
+      gap: 40px;
+      transition: width 0.4s ease, border-radius 0.4s ease, background-color 0.4s ease;
+    }
+
+    body.pengertian-mode #main-header.expand-search {
+      width: 230px;
+      border-top-right-radius: 40px;
+      border-bottom-right-radius: 40px;
+    }
+
+    body.pengertian-mode .nav-left .nav-item {
+      position: relative;
+      transition: all 0.3s ease;
+      border-radius: 0 10px 10px 0;
+    }
+
+    body.pengertian-mode .nav-left .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.0);
+      transform: translateX(8px);
+    }
+
+    .sub-navbar {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: #111;
+      padding: 10px 0;
+      flex-direction: column;
+      min-width: 200px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .sub-navbar a {
+      padding: 10px 20px;
+      color: #eee;
+      text-decoration: none;
+      display: block;
+      transition: background 0.2s ease;
+    }
+
+    .sub-navbar a:hover {
+      background-color: #222;
+    }
+
+    /* Show on hover */
+    .nav-item.has-submenu:hover .sub-navbar {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Khusus halaman pengertian (navbar kiri, sub-menu ke kanan) */
+    body.pengertian-mode .nav-item.has-submenu {
+      position: relative;
+    }
+
+    /* Sub-navbar sebagai panel lengkung kanan */
+    body.pengertian-mode .sub-navbar {
+      position: fixed;
+      top: 300px;
+      left: 140px;
+      height: auto;
+      background-color: #111;
+      border-radius: 0 40px 40px 0;
+      padding: 20px;
+      opacity: 0;
+      transform: translateX(-20px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 999;
+    }
+
+    body.pengertian-mode .sub-navbar.show {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    /* ✅ Hover aktif di wrapper */
+    body.pengertian-mode .submenu-wrapper:hover .sub-navbar {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    /* Isi link submenu */
+    body.pengertian-mode .sub-navbar a {
+      color: #eee;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    /* Dropdown di halaman HOME */
+    body:not(.pengertian-mode) .nav-item.has-submenu {
+      position: relative;
+    }
+
+    /* Default: hanya versi HOME yang terlihat */
+    .home-only {
+      display: flex;
+    }
+
+    .pengertian-only {
+      display: none;
+    }
+
+    /* Saat mode PENGERTIAN aktif */
+    body.pengertian-mode .home-only {
+      display: none;
+    }
+
+    body.pengertian-mode .pengertian-only {
+      display: flex;
+    }
+
+    /* Base */
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-input {
+      width: 0;
+      opacity: 0;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      transition: all 0.4s ease;
+      font-size: 14px;
+    }
+
+    /* Tampil saat aktif */
+    .search-container.active .search-input {
+      width: 160px;
+      opacity: 1;
+    }
+
+    /* Icon Search */
+    .search-icon {
+      width: 24px;
+      height: 24px;
+      fill: #eee;
+      cursor: pointer;
+      transition: transform 0.4s ease;
+    }
+
+    /* Rotasi animasi saat klik di halaman home */
+    body:not(.pengertian-mode) .search-container.active .search-icon {
+      transform: rotate(360deg) scale(1.1);
+    }
+
+    .search-icon:hover {
+      fill: #ff9900;
+      /* atau warna apapun, misalnya kuning-oranye */
+      transition: fill 0.3s ease;
+    }
+
+    .search-container.active .search-icon {
+      fill: #ff9900;
+      /* saat aktif */
+    }
+
+    .search-icon-wrapper {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Hover glow */
+    .search-icon-wrapper:hover {
+      background-color: rgba(255, 153, 0, 0.15);
+      box-shadow: 0 0 8px rgba(255, 153, 0, 0.6);
+    }
+
+    .search-icon-wrapper:hover .search-icon {
+      fill: #ffd1ae;
+      transition: fill 0.3s ease;
+    }
+
+    /* Saat aktif (kolom muncul) */
+    .search-container.active .search-icon-wrapper {
+      background-color: rgba(255, 153, 0, 0.15);
+      box-shadow: 0 0 10px rgba(255, 153, 0, 0.8);
+    }
+
+    .search-container.active .search-icon {
+      fill: #ffd1ae;
+    }
+
+    .pengertian-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 60px 60px 260px;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .pengertian-photo img {
+      width: 320px;
+      max-width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      object-fit: cover;
+    }
+
+    .pengertian-text {
+      flex: 1;
+      color: #f1f1f1;
+      font-size: 18px;
+      line-height: 1.7;
+      max-width: 650px;
+    }
+
+    .pengertian-text h2 {
+      font-size: 40px;
+      color: #d1a100;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .pengertian-text p {
+      margin-bottom: 24px;
+      text-align: justify;
+    }
+
+    .dekorasi-garis {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    /* Garis horizontal atas kiri (pudar di ujung kanan) */
+    .garis-horizontal-atas {
+      position: absolute;
+      top: 30px;
+      left: 160px;
+      width: 400px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to right, #aaa, transparent);
+    }
+
+    /* Garis horizontal atas kiri (pudar di ujung kanan) */
+    .garis2-horizontal-atas {
+      position: absolute;
+      top: 40px;
+      left: 170px;
+      width: 350px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 1px;
+      background: linear-gradient(to right, #aaa, transparent);
+    }
+
+    /* Garis vertikal kiri atas (pudar ke bawah) */
+    .garis-vertikal-kiri {
+      position: absolute;
+      top: 30px;
+      left: 160px;
+      height: 400px;
+      /* ubah sesuai panjang */
+      width: 2px;
+      background: linear-gradient(to bottom, #aaa, transparent);
+    }
+
+    /* Garis vertikal kiri atas (pudar ke bawah) */
+    .garis2-vertikal-kiri {
+      position: absolute;
+      top: 40px;
+      left: 170px;
+      height: 350px;
+      /* ubah sesuai panjang */
+      width: 1px;
+      background: linear-gradient(to bottom, #aaa, transparent);
+    }
+
+    /* Garis vertikal kanan bawah (pudar ke bawah) */
+    .garis-vertikal-kanan {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      height: 300px;
+      /* ubah sesuai panjang */
+      width: 2px;
+      background: linear-gradient(to top, #aaa, transparent);
+    }
+
+    /* Garis vertikal kanan bawah (pudar ke bawah) */
+    .garis2-vertikal-kanan {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      height: 250px;
+      /* ubah sesuai panjang */
+      width: 1px;
+      background: linear-gradient(to top, #aaa, transparent);
+    }
+
+    /* Garis horizontal bawah kanan (pudar di ujung kiri) */
+    .garis-horizontal-bawah {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to left, #aaa, transparent);
+    }
+
+    /* Garis horizontal bawah kanan (pudar di ujung kiri) */
+    .garis2-horizontal-bawah {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      width: 250px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 1px;
+      background: linear-gradient(to left, #aaa, transparent);
+    }
+
+    /* Garis horizontal tengah (pudar di ujung kiri) */
+    .garis-horizontal-tengah-kiri {
+      position: absolute;
+      top: 300px;
+      right: 550px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to left, #aaa, transparent);
+    }
+
+    .garis2-horizontal-tengah-kiri {
+      position: absolute;
+      top: 700px;
+      right: 550px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to left, #aaa, transparent);
+    }
+
+    .garis3-horizontal-tengah-kiri {
+      position: absolute;
+      top: 1075px;
+      right: 550px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to left, #aaa, transparent);
+    }
+
+    .garis-horizontal-tengah-kanan {
+      position: absolute;
+      top: 300px;
+      right: 250px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to right, #aaa, transparent);
+    }
+
+    .garis2-horizontal-tengah-kanan {
+      position: absolute;
+      top: 700px;
+      right: 250px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to right, #aaa, transparent);
+    }
+
+    .garis3-horizontal-tengah-kanan {
+      position: absolute;
+      top: 1075px;
+      right: 250px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to right, #aaa, transparent);
+    }
+
+    /* Garis horizontal tengah (pudar di ujung kiri) */
+    .garis-horizontal-antara-kiri {
+      position: absolute;
+      top: 580px;
+      right: 550px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to left, #aaa, transparent);
+    }
+
+    /* Garis horizontal tengah (pudar di ujung kiri) */
+    .garis2-horizontal-antara-kiri {
+      position: absolute;
+      top: 1030px;
+      right: 550px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to left, #aaa, transparent);
+    }
+
+    /* Garis horizontal tengah (pudar di ujung kiri) */
+    .garis3-horizontal-antara-kiri {
+      position: absolute;
+      top: 1440px;
+      right: 550px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to left, #aaa, transparent);
+    }
+
+    .garis-horizontal-antara-kanan {
+      position: absolute;
+      top: 580px;
+      right: 250px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to right, #aaa, transparent);
+    }
+
+    .garis2-horizontal-antara-kanan {
+      position: absolute;
+      top: 1030px;
+      right: 250px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to right, #aaa, transparent);
+    }
+
+    .garis3-horizontal-antara-kanan {
+      position: absolute;
+      top: 1440px;
+      right: 250px;
+      width: 300px;
+      /* ubah sesuai panjang yang kamu mau */
+      height: 2px;
+      background: linear-gradient(to right, #aaa, transparent);
+    }
+
+    .layout-jenis {
+      padding: 100px 40px 60px 80px !important;
+    }
+
+    /* Untuk bagian Judul Tengah */
+    .jenis-header {
+      text-align: center;
+      max-width: 910px;
+      margin: 0 auto 60px;
+      padding-left: 110px;
+      color: #eee;
+    }
+
+    .jenis-header h2 {
+      font-size: 42px;
+      color: #d1a100;
+      margin-bottom: 12px;
+    }
+
+    .jenis-header p {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    /* Struktur Zig-Zag */
+    .layout-jenis .jenis-item {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      width: 100%;
+      min-height: 300px;
+      margin: 60px 0;
+      padding: 20px;
+      margin-bottom: 60px;
+    }
+
+    .jenis-item.jenis-kanan::before {
+      left: auto;
+      right: -15px;
+      border-radius: 0 20px 20px 0;
+    }
+
+    .layout-jenis .jenis-gambar img {
+      width: 280px;
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .layout-jenis .jenis-teks {
+      flex: 1 1 0%;
+      color: #eee;
+      font-size: 17px;
+      line-height: 1.6;
+      padding-left: 130px;
+      padding-right: 20px;
+    }
+
+    .layout-jenis .jenis-teks h3 {
+      font-size: 26px;
+      color: #d1a100;
+      margin-bottom: 12px;
+    }
+
+    .jenis-teks p {
+      text-align: justify;
+    }
+
+    .jenis-penentuan-wrapper {
+      text-align: center;
+    }
+
+    .jenis-penentuan {
+      text-align: center;
+      padding-top: 40px;
+      padding-bottom: 60px;
+      max-width: 800px;
+      margin: 0 auto;
+      color: #eee;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 30px 40px;
+      background-color: rgba(255, 255, 255, 0.03);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .jenis-penentuan h3 {
+      font-size: 26px;
+      color: #d1a100;
+      margin-bottom: 20px;
+    }
+
+    .jenis-penentuan ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .jenis-penentuan li::before {
+      content: "• ";
+      color: #ff9900;
+    }
+
+    .jenis-item.jenis-kiri .jenis-teks {
+      padding-left: 10px;
+    }
+
+    .jenis-item.jenis-kanan .jenis-teks {
+      padding-left: 155px;
+      padding-right: 2px;
+    }
+
+    .jenis-gambar.jenis-kiri {
+      padding-left: 155px;
+    }
+
+    .jenis-gambar.jenis-kanan {
+      padding-left: 2px;
+      padding-right: 30px;
+    }
+
+    .fade-in-left,
+    .fade-in-right,
+    .fade-in-up {
+      opacity: 0;
+      transform: translateX(0);
+      /* default */
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .fade-in-left {
+      transform: translateX(100px);
+    }
+
+    .fade-in-right {
+      transform: translateX(-100px);
+    }
+
+    .fade-in-up {
+      transform: translateY(50px);
+    }
+
+    .fade-in-visible {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .layout-ciri {
+      padding: 100px 40px 60px 80px !important;
+    }
+
+    /* Untuk bagian Judul Tengah */
+    .ciri-header {
+      text-align: center;
+      max-width: 910px;
+      margin: 0 auto 20px;
+      padding-left: 110px;
+      color: #eee;
+    }
+
+    .ciri-header h2 {
+      font-size: 42px;
+      color: #d1a100;
+      margin-bottom: 12px;
+    }
+
+    .ciri-header p {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .ciri-teks p {
+      text-align: justify;
+    }
+
+
+    /* Struktur Zig-Zag */
+    .layout-ciri .ciri-item {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      width: 100%;
+      min-height: 300px;
+      margin: 60px 0;
+      padding: 20px;
+      margin-bottom: 60px;
+    }
+
+    .ciri-item.ciri-kanan::before {
+      left: auto;
+      right: -15px;
+      border-radius: 0 20px 20px 0;
+    }
+
+    .layout-ciri .ciri-gambar img {
+      width: 360px;
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .layout-ciri .ciri-teks {
+      flex: 1 1 0%;
+      color: #eee;
+      font-size: 17px;
+      line-height: 1.6;
+      padding-left: 130px;
+      padding-right: 20px;
+    }
+
+    .layout-ciri .ciri-teks h3 {
+      font-size: 26px;
+      color: #d1a100;
+      margin-bottom: 12px;
+    }
+
+    .ciri-penentuan-wrapper {
+      text-align: center;
+    }
+
+    .ciri-penentuan ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .ciri-penentuan li::before {
+      content: "• ";
+      color: #ff9900;
+    }
+
+    .ciri-item.ciri-kiri .ciri-teks {
+      padding-left: 10px;
+    }
+
+    .ciri-item.ciri-kanan .ciri-teks {
+      padding-left: 155px;
+      padding-right: 2px;
+    }
+
+    .ciri-gambar.ciri-kiri {
+      padding-left: 155px;
+    }
+
+    .ciri-gambar.ciri-kanan {
+      padding-left: 2px;
+      padding-right: 30px;
+    }
+
+    .fade-in-left,
+    .fade-in-right {
+      opacity: 0;
+      transform: translateX(0);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .fade-in-left {
+      transform: translateX(100px);
+    }
+
+    .fade-in-right {
+      transform: translateX(-100px);
+    }
+
+    .fade-in-visible {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .ciri-item-pertama {
+      margin-top: 55px !important;
+      padding-top: 0 !important;
+    }
+
+    .sejarah-wrapper {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 60px 60px 60px 260px;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .sejarah-wrapper .gambar-kolom {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sejarah-wrapper .teks-kolom {
+      flex: 1;
+      color: #f1f1f1;
+      font-size: 18px;
+      line-height: 1.7;
+      max-width: 650px;
+    }
+
+    .sejarah-photo img {
+      width: 320px;
+      max-width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      object-fit: cover;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .sejarah-photo img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .sejarah-wrapper h2 {
+      font-size: 40px;
+      color: #d1a100;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .sejarah-wrapper p {
+      margin-bottom: 24px;
+      text-align: justify;
+    }
+
+    .franklin-list {
+      margin-top: 0;
+      margin-bottom: 12px;
+      padding-left: 20px;
+    }
+
+    .franklin-list+p {
+      margin-top: 16px;
+    }
+
+    p:has(+ .franklin-list) {
+      margin-bottom: 0;
+    }
+
+    .franklin-list li {
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+
+    .after-list {
+      margin-top: 16px;
+      text-align: justify;
+    }
+
+    .hidden-content {
+      display: none;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .read-more-btn {
+      margin-top: 16px;
+      padding: 8px 18px;
+      border: 2px solid #fff;
+      border-radius: 20px;
+      background: transparent;
+      color: white;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 16px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .read-more-btn:hover {
+      background: #ffd700;
+      color: black;
+    }
+
+    .tambahan-gambar {
+      margin-top: 20px;
+    }
+
+    .jenis-penentuan {
+      margin-left: 100px;
+    }
+
+    .layout-profil {
+      padding: 100px 40px 60px 180px !important;
+      color: #fff;
+    }
+
+    .profil-header {
+      text-align: center;
+      padding-bottom: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .profil-header h2 {
+      font-size: 42px;
+      color: #d1a100;
+      margin-bottom: 12px;
+    }
+
+    .profil-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+      justify-items: center;
+    }
+
+    .profil-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profil-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
+    }
+
+    .profil-card img {
+      width: 130px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      border: 3px solid #ffcc00;
+      background-color: #1e1e1e;
+    }
+
+    .profil-card h3 {
+      color: #ffcc00;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .profil-card p {
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- Header -->
+  <header id="main-header">
+    <div class="nav-left">
+      <a href="javascript:void(0);" onclick="switchToHome()"><svg class="icon-home" xmlns="http://www.w3.org/2000/svg"
+          width="24" height="24" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+        </svg>
+      </a>
+      <a href="javascript:void(0);" onclick="switchToSection('pengertian')" class="nav-item">PENGERTIAN</a>
+      <a href="javascript:void(0);" onclick="switchToSection('jenis')" class="nav-item">JENIS-JENIS</a>
+      <a href="javascript:void(0);" onclick="switchToSection('ciri')" class="nav-item">CIRI-CIRI</a>
+      <a href="javascript:void(0);" onclick="switchToSection('sejarah')" class="nav-item">SEJARAH</a>
+      <a href="javascript:void(0);" onclick="switchToSection('profile')" class="nav-item">PROFILE</a>
+    </div>
+    <div class="nav-right">
+      <!-- Versi PENGERTIAN: Klik Panel Kanan -->
+      <div class="submenu-wrapper pengertian-only">
+        <div class="nav-item has-submenu" id="perhitungan-toggle">
+          <a href="#">PERHITUNGAN</a>
+        </div>
+        <div class="sub-navbar" id="perhitungan-submenu">
+          <a href="/FISIKA-WEB/materi/kuat-arus-listrik/kuat-arus-listrik.html">Kuat Arus Listrik</a>
+          <a href="/FISIKA-WEB/materi/gaya-coulomb/gaya-coulomb.html">Gaya Coulomb</a>
+          <a href="/FISIKA-WEB/materi/muatan-listrik/muatan-listrik.html">Muatan Listrik</a>
+          <a href="/FISIKA-WEB/materi/gaya-total/gaya-total.html">Gaya Total</a>
+        </div>
+      </div>
+
+      <div class="search-container">
+        <div class="search-icon-wrapper" id="search-toggle">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20"
+            fill="rgb(227, 227, 227)">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5
+              6.5 6.5 0 109.5 16c1.61 0 3.09-.59
+              4.23-1.57l.27.28v.79l5 4.99
+              L20.49 19l-4.99-5zm-6 0C8.01 14 6 11.99
+              6 9.5S8.01 5 10.5 5 15 7.01 15 9.5
+              12.99 14 10.5 14z" />
+          </svg>
+        </div>
+        <input type="text" class="search-input" placeholder="Cari sesuatu..." />
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero" id="home-section">
+      <div class="hero" id="home-section">
+        <div class="hero-text">
+          <div class="title-row">
+            <h1 class="electric-text">Fisika</h1>
+            <h2>Dasar 2A</h2>
+          </div>
+          <div class="price">
+            <span class="label" style="color: rgb(227, 227, 227);">Muatan</span>
+            <span class="value electric-text" style="font-size: 80px; color: rgb(255, 239, 149);">Listrik</span>
+          </div>
+          <a href="#" class="simulasi-button"><span>SIMULASI</span></a>
+        </div>
+        <div class="hero-video-wrapper">
+          <video autoplay muted loop playsinline preload="none" poster="fallback.jpg">
+            <source src="https://cdn.pixabay.com/video/2024/01/25/198117-906563994_small.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="pengertian-section" class="pengertian-section">
+    <div class="pengertian-wrapper">
+      <!-- Garis Dekoratif -->
+      <div class="dekorasi-garis">
+        <div class="garis-horizontal-atas"></div>
+        <div class="garis-horizontal-bawah"></div>
+        <div class="garis-vertikal-kiri"></div>
+        <div class="garis-vertikal-kanan"></div>
+        <div class="garis2-horizontal-atas"></div>
+        <div class="garis2-horizontal-bawah"></div>
+        <div class="garis2-vertikal-kiri"></div>
+        <div class="garis2-vertikal-kanan"></div>
+      </div>
+      <div class="pengertian-photo">
+        <img src="images/ilustrasi atom.jpg" alt="Ilustrasi Atom" />
+      </div>
+      <div class="pengertian-text">
+        <h2>Pengertian Muatan Listrik</h2>
+        <p><strong>Muatan listrik</strong> adalah muatan dasar yang terdapat di dalam suatu atom. Seperti kamu ketahui,
+          di dalam atom terdapat dua partikel bermuatan atau muatan listrik, yaitu elektron dan proton. Interaksi
+          antarmuatan itu akan menghasilkan suatu gaya yang disebut gaya elektrostatis. Mekanisme interaksinya sama
+          seperti interaksi magnet, yaitu jika muatan sejenis didekatkan akan terjadi gaya tolak menolak, jika muatan
+          yang tidak sejenis didekatkan akan terjadi gaya tarik menarik. Besarnya gaya tolak menolak atau gaya tarik
+          menarik itu sebanding dengan hasil kali kedua muatan dan berbanding terbalik dengan kuadrat jaraknya.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="jenis-section" class="pengertian-section layout-jenis">
+    <!-- Garis Dekoratif -->
+    <div class="dekorasi-garis">
+      <div class="garis-horizontal-atas"></div>
+      <div class="garis-horizontal-bawah"></div>
+      <div class="garis-vertikal-kiri"></div>
+      <div class="garis-vertikal-kanan"></div>
+      <div class="garis2-horizontal-atas"></div>
+      <div class="garis2-horizontal-bawah"></div>
+      <div class="garis2-vertikal-kiri"></div>
+      <div class="garis2-vertikal-kanan"></div>
+      <div class="garis-horizontal-tengah-kiri"></div>
+      <div class="garis2-horizontal-tengah-kiri"></div>
+      <div class="garis3-horizontal-tengah-kiri"></div>
+      <div class="garis-horizontal-tengah-kanan"></div>
+      <div class="garis2-horizontal-tengah-kanan"></div>
+      <div class="garis3-horizontal-tengah-kanan"></div>
+    </div>
+    <!-- Judul utama -->
+    <div class="jenis-header">
+      <h2>Jenis-Jenis Muatan Listrik</h2>
+      <p>Muatan listrik adalah sifat dasar dari partikel sub atom yang menyebabkan partikel tersebut mengalami gaya
+        tarik-menarik atau tolak-menolak dalam medan listrik. Benjamin Franklin adalah tokoh yang pertama kali
+        mengemukakan konsep muatan listrik, dan membaginya menjadi dua jenis:</p>
+    </div>
+
+    <!-- Muatan Positif -->
+    <div class="jenis-item jenis-kiri">
+      <div class="jenis-gambar jenis-kiri fade-in-right">
+        <img src="images/muatan positif.jpg" alt="Muatan Positif">
+      </div>
+      <div class="jenis-teks fade-in-right">
+        <h3>Muatan Positif (Proton)</h3>
+        <p>Benjamin Franklin menyatakan bahwa muatan listrik positif (proton) adalah muatan yang akan saling
+          tolak-menolak dengan benda yang bermuatan positif, dan akan tarik-menarik dengan muatan negatif.</p>
+
+        <p>Proton sendiri adalah partikel bermuatan positif yang berada di dalam inti atom. Nilai muatan proton adalah
+          sebesar +1,6 × 10⁻¹⁹ C, sama besar tetapi berlawanan tanda dengan muatan elektron. Gagasan awal mengenai
+          proton dikemukakan oleh Eugene Goldstein, dan penelitian lebih lanjut dilakukan oleh Ernest Rutherford yang
+          menyimpulkan bahwa proton terpusat di inti atom. Proton memiliki massa sekitar 1.836 kali lebih besar dari
+          massa elektron, dan rentan terhadap peluruhan.</p>
+      </div>
+    </div>
+
+    <!-- Muatan Negatif -->
+    <div class="jenis-teks teks-kanan"></div>
+    <div class="jenis-item jenis-kanan fade-in-left">
+      <div class="jenis-teks">
+        <h3>Muatan Negatif (Elektron)</h3>
+        <p>Muatan listrik negatif (elektron) akan saling tolak-menolak dengan benda yang memiliki muatan sejenis, dan
+          akan tarik-menarik dengan muatan positif.</p>
+        <p>Elektron adalah partikel bermuatan negatif yang pertama kali ditemukan pada tahun 1897 oleh ilmuwan asal
+          Inggris, J.J. Thompson. Nilai muatannya adalah –1,6 × 10⁻¹⁹ C. Elektron bergerak mengelilingi inti atom dalam
+          lintasan tertentu dan dianggap sebagai partikel elementer karena tidak memiliki substruktur.</p>
+      </div>
+      <div class="jenis-gambar jenis-kanan">
+        <img src="images/muatan negatif.jpg" alt="Muatan Negatif">
+      </div>
+    </div>
+
+    <!-- Muatan Netral -->
+    <div class="jenis-item jenis-kiri fade-in-right">
+      <div class="jenis-gambar jenis-kiri">
+        <img src="images/muatan neutron.jpg" alt="Muatan Netral">
+      </div>
+      <div class="jenis-teks">
+        <h3>Muatan Netral (Neutron)</h3>
+        <p>Selain proton dan elektron, terdapat pula neutron, yaitu partikel yang tidak memiliki muatan listrik. Neutron
+          ditemukan oleh James Chadwick pada tahun 1932 saat meneliti radiasi tidak biasa dari unsur berilium yang
+          ditembakkan dengan partikel alfa. Chadwick menyimpulkan bahwa partikel tersebut netral, sehingga dinamai
+          neutron. Neutron bersama proton terletak di inti atom dan berperan penting dalam kestabilan inti.</p>
+      </div>
+    </div>
+
+    <!-- Penentuan Muatan -->
+    <div class="jenis-penentuan-wrapper">
+      <div class="jenis-penentuan fade-in-up">
+        <h3>Penentuan Muatan Listrik Suatu Benda</h3>
+        <ul>
+          <li>Muatan Negatif: Jika jumlah elektron > proton (Σ e⁻ > Σ p⁺)</li>
+          <li>Muatan Positif: Jika jumlah elektron < proton (Σ e⁻ < Σ p⁺)</li>
+          <li>Muatan Netral: Jika jumlah elektron = proton</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ciri-Ciri Section -->
+  <section id="ciri-section" class="pengertian-section layout-ciri">
+    <!-- Garis Dekoratif -->
+    <div class="dekorasi-garis">
+      <div class="garis-horizontal-atas"></div>
+      <div class="garis-horizontal-bawah"></div>
+      <div class="garis-vertikal-kiri"></div>
+      <div class="garis-vertikal-kanan"></div>
+      <div class="garis2-horizontal-atas"></div>
+      <div class="garis2-horizontal-bawah"></div>
+      <div class="garis2-vertikal-kiri"></div>
+      <div class="garis2-vertikal-kanan"></div>
+      <div class="garis-horizontal-antara-kiri"></div>
+      <div class="garis2-horizontal-antara-kiri"></div>
+      <div class="garis3-horizontal-antara-kiri"></div>
+      <div class="garis-horizontal-antara-kanan"></div>
+      <div class="garis2-horizontal-antara-kanan"></div>
+      <div class="garis3-horizontal-antara-kanan"></div>
+    </div>
+    <!-- Judul utama -->
+    <div class="ciri-header">
+      <h2>Ciri-Ciri Muatan Listrik</h2>
+    </div>
+
+    <!-- Muatan Listrik Terdiri dari Dua Jenis -->
+    <div class="ciri-item ciri-kiri ciri-item-pertama">
+      <div class="ciri-gambar ciri-kiri fade-in-right">
+        <img src="images/Muatan Positif dan Negatif.png" alt="Muatan Listrik Terdiri dari Dua Jenis">
+      </div>
+      <div class="ciri-teks fade-in-right">
+        <h3>Muatan Listrik Terdiri dari Dua Jenis</h3>
+        <p>Muatan listrik terbagi menjadi dua jenis, yaitu muatan listrik negatif (elektron) dan muatan listrik positif
+          (proton). Kedua muatan itu bisa saling berpindah dari materi yang satu ke materi lainnya. Dalam hal ini,
+          maksud dari materi adalah benda atau barang.</p>
+        <p>Suatu materi dapat dikatakan muatan positif, jika jumlah elektron pada materi tersebut lebih sedikit
+          dibandingkan dengan jumlah protonnya. Sedangkan, suatu materi akan dikatakan bermuatan negatif, jika jumlah
+          elektronnya lebih banyak dari jumlah proton. Secara sederhana, semakin banyak jumlah elektron pada suatu
+          materi, maka akan menghasilkan muatan listrik negatif, dan hal ini berlaku sebaliknya.</p>
+      </div>
+    </div>
+
+    <!-- Muatan Bersifat Kekal -->
+    <div class="ciri-teks teks-kanan"></div>
+    <div class="ciri-item ciri-kanan fade-in-left">
+      <div class="ciri-teks">
+        <h3>Muatan Bersifat Kekal</h3>
+        <p>Menurut Benjamin Franklin, muatan yang ada pada suatu benda memiliki sifat yang kekal. Hal ini sudah menjadi
+          bagian dari hukum kekekalan muatan. Dengan kata lain, suatu muatan (positif atau negatif) tidak bisa
+          diciptakan dan tidak bisa dimusnahkan.</p>
+        <p>Hal seperti ini dapat kita lihat pada dua jenis benda yang berbeda, kemudian didekatkan atau digosokkan bisa
+          memunculkan muatan listrik. Reaksi tarik menarik dari kedua benda tersebut akan terjadi bila muatan listrik
+          negatif (elektron) dapat berpindah dari tempat satu ke tempat lainnya. Akan tetapi, jika muatan listrik
+          negatif (elektron) tidak berpindah ke benda lainnya, maka reaksi yang dihasilkan adalah tolak menolak.</p>
+      </div>
+      <div class="ciri-gambar ciri-kanan">
+        <img src="images/Kekalan Muatan.png" alt="Muatan Bersifat Kekal">
+      </div>
+    </div>
+
+    <!-- Muatan Listrik Bisa saling Tolak Menolak atau Tarik Menarik -->
+    <div class="ciri-item ciri-kiri fade-in-right">
+      <div class="ciri-gambar ciri-kiri">
+        <img src="images/Tarik Menarik.png" alt="Muatan Listrik Bisa saling Tolak Menolak atau Tarik Menarik">
+      </div>
+      <div class="ciri-teks">
+        <h3>Muatan Listrik Bisa saling Tolak Menolak atau Tarik Menarik</h3>
+        <p>Pada ciri ketiga ini, kita baru bisa membuktikannya dengan cara mendekatkan kedua benda atau agar lebih mudah
+          menggosokkan benda yang satu kemudian didekatkan pada benda lainnya.</p>
+        <p>Jika kedua benda tersebut bisa saling tarik menarik, maka kita akan tahu bahwa muatan listrik antara kedua
+          benda tersebut berbeda jenis. Muatan listrik yang sama atau sejenis pada suatu benda akan membuat kedua benda
+          tersebut saling tolak menolak. Hal ini dikarenakan elektron tidak berpindah ke benda lain.</p>
+      </div>
+    </div>
+
+    <!-- Muatan Listrik Merupakan Besaran Fisika -->
+    <div class="ciri-teks teks-kanan"></div>
+    <div class="ciri-item ciri-kanan fade-in-left">
+      <div class="ciri-teks">
+        <h3>Muatan Listrik Merupakan Besaran Fisika</h3>
+        <p>Hal ini dapat dibuktikan dengan adanya rumus dari muatan listrik dan adanya Satuan Internasional muatan
+          listrik, yaitu coulomb. Bahkan, muatan listrik memiliki sebuah simbol, yaitu Q.</p>
+        <p>Dalam satu muatan listrik proton sama dengan (1.602 x 10-19) dan dalam satu muatan listrik elektron sama
+          dengan (1.602 x -10-19). Dengan masuknya muatan listrik ke dalam ilmu fisika, maka kita bisa menghitung
+          besaran muatan listrik yang ada di dalam suatu materi atau benda.</p>
+      </div>
+      <div class="ciri-gambar ciri-kanan">
+        <img src="images/Muatan listrik besaran fisika.PNG" alt="Muatan Listrik Merupakan Besaran Fisika">
+      </div>
+    </div>
+  </section>
+
+  <section id="sejarah-section" class="pengertian-section">
+    <div class="sejarah-wrapper">
+      <!-- Garis Dekoratif -->
+      <div class="dekorasi-garis">
+        <div class="garis-horizontal-atas"></div>
+        <div class="garis-horizontal-bawah"></div>
+        <div class="garis-vertikal-kiri"></div>
+        <div class="garis-vertikal-kanan"></div>
+        <div class="garis2-horizontal-atas"></div>
+        <div class="garis2-horizontal-bawah"></div>
+        <div class="garis2-vertikal-kiri"></div>
+        <div class="garis2-vertikal-kanan"></div>
+      </div>
+      <!-- Kolom Gambar -->
+      <div class="gambar-kolom">
+        <div class="sejarah-photo">
+          <img src="images/Benjamin_Franklin_1767.jpg" title="Benjamin Franklin" alt="Franklin Menulis">
+        </div>
+        <div class="sejarah-photo tambahan-gambar hidden-content">
+          <img
+            src="images/Benjamin_West,_English_(born_America)_-_Benjamin_Franklin_Drawing_Electricity_from_the_Sky_-_Google_Art_Project.jpg"
+            title="Percobaan Layang-layang" alt="Franklin Percobaan">
+        </div>
+        <div class="sejarah-photo tambahan-gambar hidden-content">
+          <img src="images/benjamin franklin.png" title="Percobaan Batang Karet pada Bulu Domba"
+            alt="Franklin Eksperimen Listrik">
+        </div>
+      </div>
+      <div class="teks-kolom">
+        <h2>Sejarah Muatan Listrik</h2>
+        <p><strong>Benjamin Franklin</strong> lahir pada 17 Januari 1706 di Boston, Amerika Serikat. Ia
+          dikenal sebagai sosok multitalenta: pengarang, wartawan, ilmuwan, gubernur, hingga diplomat. Sepanjang
+          hidupnya, ia tidak hanya aktif dalam dunia ilmu pengetahuan, tetapi juga memainkan peran penting dalam sejarah
+          politik Amerika. Franklin adalah salah satu tokoh utama dalam Revolusi Amerika, penandatangan Deklarasi
+          Kemerdekaan, serta pencetus dari perpustakaan umum dan kantor pos pertama di Amerika Serikat.</p>
+
+        <div id="sejarah-more" class="hidden-content">
+          <p>Ketertarikannya pada bidang kelistrikan mendorongnya melakukan berbagai penelitian penting. Salah satu
+            eksperimen terkenalnya adalah <em>percobaan layang-layang</em>, yang dilakukan untuk membuktikan bahwa petir
+            mengandung
+            muatan listrik. Dari percobaan tersebut, Franklin akhirnya mengembangkan penemuan besar yang masih digunakan
+            hingga kini, yaitu <em>penangkal petir</em>.</p>
+          <p>Selain itu, Franklin juga melakukan eksperimen muatan listrik statis dengan cara <em>menggosokkan batang
+              karet
+              pada bulu domba</em>, lalu mendekatkannya ke batang kaca. Ia menemukan bahwa benda yang digosok dapat
+            mengalami
+            muatan listrik, yang menyebabkan interaksi tolak-menolak atau tarik-menarik antar benda.</p>
+
+          <p>Dari hasil pengamatannya, Franklin menyimpulkan bahwa:</p>
+          <ul class="franklin-list">
+            <li>Benda bermuatan sama akan saling tolak-menolak</li>
+            <li>Benda bermuatan berbeda akan saling tarik-menarik</li>
+          </ul>
+
+          <p class="after-list">
+            Ia juga memperkenalkan konsep penting bahwa muatan listrik tidak diciptakan maupun dimusnahkan, melainkan
+            hanya berpindah dari satu benda ke benda lainnya prinsip yang kini dikenal sebagai hukum kekekalan muatan.
+          </p>
+          <p>Penelitian-penelitian Franklin menjadi dasar bagi pemahaman kita tentang muatan positif dan negatif, serta
+            bagaimana perpindahan elektron menyebabkan benda menjadi bermuatan. Benda yang kehilangan elektron akan
+            menjadi positif, sedangkan benda yang menerima elektron akan menjadi negatif.</p>
+          <p>Benjamin Franklin menghembuskan napas terakhirnya pada 17 April 1790, namun warisan ilmiahnya terus hidup.
+            Kontribusinya terhadap ilmu kelistrikan dan kemajuan teknologi menjadi pondasi penting bagi perkembangan
+            ilmu
+            fisika dan teknik modern hingga saat ini.</p>
+        </div>
+
+        <button class="read-more-btn" onclick="toggleSejarah()">Read More ▼</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="profile-section" class="pengertian-section layout-profil">
+    <div class="profil-header">
+      <h2>Profil Kelompok</h2>
+      <p>Berikut adalah anggota dari kelompok kami dalam mata kuliah Fisika Dasar 2A.</p>
+    </div>
+    <div class="profil-grid">
+      <!-- Anggota 1 -->
+      <div class="profil-card fade-in-up">
+        <img src="images/Anggota.png" alt="Nama Anggota 1">
+        <h3>Abbas Alfiansyah A</h3>
+        <p>NPM: 50424001</p>
+      </div>
+      <!-- Anggota 2 -->
+      <div class="profil-card fade-in-up">
+        <img src="images/Anggota.png" alt="Nama Anggota 2">
+        <h3>Fatan Fidianto</h3>
+        <p>NPM: 50424437</p>
+      </div>
+      <!-- Anggota 3 -->
+      <div class="profil-card fade-in-up">
+        <img src="images/Anggota.png" alt="Nama Anggota 3">
+        <h3>M Fadly Sofyan</h3>
+        <p>NPM: 50424815</p>
+      </div>
+      <!-- Anggota 4 -->
+      <div class="profil-card fade-in-up">
+        <img src="images/Anggota.png" alt="Nama Anggota 4">
+        <h3>M Naufal Azmi</h3>
+        <p>NRP: 50424884</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function switchToSection(section) {
+      const body = document.body;
+      body.classList.add("pengertian-mode");
+      body.classList.remove("animate-home");
+
+      // Pause video
+      const video = document.querySelector(".hero-video-wrapper video");
+      if (video) video.pause();
+
+      // Sembunyikan semua section
+      document.querySelectorAll(".pengertian-section").forEach(sec => {
+        sec.style.display = "none";
+        sec.style.opacity = "0";
+        sec.style.visibility = "hidden";
+        sec.style.transform = "translateX(-50px)";
+      });
+
+      // Tampilkan section sesuai pilihan
+      const target = document.getElementById(section + "-section");
+      if (target) {
+        target.style.display = "block";
+        setTimeout(() => {
+          target.style.opacity = "1";
+          target.style.visibility = "visible";
+          target.style.transform = "translateX(0)";
+
+          // Setelah tampil, scroll ke atas section tersebut
+          setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 500);
+        }, 10);
+      }
+
+      // Reset animasi scroll agar muncul ulang saat balik ke section
+      if (section === "jenis") {
+        setTimeout(() => {
+          const jenisSection = document.getElementById('jenis-section');
+          if (jenisSection) {
+            jenisSection.querySelectorAll('.fade-in-left, .fade-in-right, .fade-in-up').forEach(el => {
+              el.classList.remove('fade-in-visible');
+              observer.observe(el); // observe ulang supaya efek jalan lagi
+            });
+          }
+        }, 500); // delay cukup agar elemen sudah tampil
+      }
+
+      if (section === "ciri") {
+        setTimeout(() => {
+          const ciriSection = document.getElementById('ciri-section');
+          if (ciriSection) {
+            ciriSection.querySelectorAll('.fade-in-left, .fade-in-right, .fade-in-up').forEach(el => {
+              el.classList.remove('fade-in-visible');
+              observer.observe(el); // re-observe supaya transisi bisa jalan lagi
+            });
+          }
+        }, 600); // kasih delay supaya elemen sudah muncul
+      }
+
+      // Optimasi transisi
+      body.classList.add("transitioning");
+      setTimeout(() => {
+        body.classList.remove("transitioning");
+      }, 1000);
+    }
+
+    function switchToHome() {
+      const body = document.body;
+      body.classList.add("pengertian-leave");
+      body.classList.add("transitioning");
+
+      // Play video kembali
+      const video = document.querySelector(".hero-video-wrapper video");
+      if (video) video.play();
+
+      document.querySelectorAll(".pengertian-section").forEach(sec => {
+        sec.style.opacity = "0";
+        sec.style.visibility = "hidden";
+        sec.style.transform = "translateX(-50px)";
+        setTimeout(() => {
+          sec.style.display = "none";
+        }, 500); // sesuai durasi transisi CSS
+      });
+
+      setTimeout(() => {
+        body.classList.remove("pengertian-mode");
+        body.classList.remove("pengertian-leave");
+        body.classList.remove("transitioning");
+
+        // Tampilkan hero kembali
+        const hero = document.querySelector(".hero");
+        if (hero) {
+          hero.style.opacity = "1";
+          hero.style.pointerEvents = "auto";
+        }
+      }, 800);
+    }
+
+    // ✅ Toggle submenu PERHITUNGAN (klik untuk tampil/sembunyi)
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('perhitungan-toggle');
+      const submenu = document.getElementById('perhitungan-submenu');
+
+      if (toggle && submenu) {
+        toggle.addEventListener('click', function (e) {
+          e.stopPropagation(); // supaya tidak langsung hilang
+          submenu.classList.toggle('show');
+        });
+
+        // klik di luar -> tutup submenu
+        document.addEventListener('click', function (e) {
+          if (!submenu.contains(e.target) && !toggle.contains(e.target)) {
+            submenu.classList.remove('show');
+          }
+        });
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggle = document.getElementById("search-toggle");
+      const container = toggle.closest(".search-container");
+
+      toggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        container.classList.toggle("active");
+
+        // khusus pengertian mode, lebar navbar ikut bertambah
+        const body = document.body;
+        const header = document.getElementById("main-header");
+
+        if (body.classList.contains("pengertian-mode")) {
+          if (container.classList.contains("active")) {
+            header.classList.add("expand-search");
+          } else {
+            header.classList.remove("expand-search");
+          }
+        }
+
+        const input = container.querySelector(".search-input");
+        if (container.classList.contains("active")) {
+          setTimeout(() => input.focus(), 150);
+        }
+      });
+
+      document.addEventListener("click", function (e) {
+        if (!container.contains(e.target)) {
+          container.classList.remove("active");
+          document.getElementById("main-header").classList.remove("expand-search");
+        }
+      });
+    });
+
+    let observer;
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const targets = document.querySelectorAll('.fade-in-left, .fade-in-right, .fade-in-up');
+
+      observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-visible');
+            observer.unobserve(entry.target); // hanya aktif sekali
+          }
+        });
+      }, {
+        threshold: 0.1
+      });
+
+      targets.forEach(el => observer.observe(el));
+    });
+
+    function toggleSejarah() {
+      const moreText = document.getElementById("sejarah-more");
+      const extraImages = document.querySelectorAll(".tambahan-gambar");
+      const button = document.querySelector(".read-more-btn");
+
+      const isOpen = moreText.style.display === "block";
+
+      moreText.style.display = isOpen ? "none" : "block";
+      extraImages.forEach(img => {
+        img.style.display = isOpen ? "none" : "block";
+      });
+
+      button.innerHTML = isOpen ? "Read More ▼" : "Read Less ▲";
+    }
+  </script>
+</body>
+
+</html>
