@@ -548,10 +548,11 @@
             <h3>Hasil:</h3>
             <p id="hasil-fa"></p>
           </div>
-          <label for="q1-fa">Muatan Q₁:</label>
+
+          <label for="qa-fa">Muatan Q<sub>A</sub>:</label>
           <div class="row-input">
-            <input type="number" id="q1-fa" placeholder="Masukkan muatan Q₁">
-            <select id="q1Unit-fa">
+            <input type="number" id="qa-fa" placeholder="Masukkan muatan Qₐ">
+            <select id="qaUnit-fa">
               <option value="C">C</option>
               <option value="mC">mC</option>
               <option value="μC" selected>μC</option>
@@ -559,10 +560,10 @@
             </select>
           </div>
 
-          <label for="q2-fa">Muatan Q₂:</label>
+          <label for="qb-fa">Muatan Q<sub>B</sub>:</label>
           <div class="row-input">
-            <input type="number" id="q2-fa" placeholder="Masukkan muatan Q₂">
-            <select id="q2Unit-fa">
+            <input type="number" id="qb-fa" placeholder="Masukkan muatan Qᵦ">
+            <select id="qbUnit-fa">
               <option value="C">C</option>
               <option value="mC">mC</option>
               <option value="μC" selected>μC</option>
@@ -570,10 +571,31 @@
             </select>
           </div>
 
-          <label for="r-fa">Jarak r:</label>
+          <label for="qc-fa">Muatan Q<sub>C</sub>:</label>
           <div class="row-input">
-            <input type="number" id="r-fa" placeholder="Masukkan jarak r">
-            <select id="rUnit-fa">
+            <input type="number" id="qc-fa" placeholder="Masukkan muatan Q꜀">
+            <select id="qcUnit-fa">
+              <option value="C">C</option>
+              <option value="mC">mC</option>
+              <option value="μC" selected>μC</option>
+              <option value="nC">nC</option>
+            </select>
+          </div>
+
+          <label for="rab-fa">Jarak r<sub>AB</sub>:</label>
+          <div class="row-input">
+            <input type="number" id="rab-fa" placeholder="Masukkan jarak AB">
+            <select id="rabUnit-fa">
+              <option value="m">m</option>
+              <option value="cm" selected>cm</option>
+              <option value="mm">mm</option>
+            </select>
+          </div>
+
+          <label for="rac-fa">Jarak r<sub>AC</sub>:</label>
+          <div class="row-input">
+            <input type="number" id="rac-fa" placeholder="Masukkan jarak AC">
+            <select id="racUnit-fa">
               <option value="m">m</option>
               <option value="cm" selected>cm</option>
               <option value="mm">mm</option>
@@ -734,72 +756,81 @@
 
   <script>
     function hitungFA() {
-      const q1 = parseFloat(document.getElementById("q1-fa").value);
-      const q1Unit = document.getElementById("q1Unit-fa").value;
-      const q2 = parseFloat(document.getElementById("q2-fa").value);
-      const q2Unit = document.getElementById("q2Unit-fa").value;
-      const r = parseFloat(document.getElementById("r-fa").value);
-      const rUnit = document.getElementById("rUnit-fa").value;
+      const qa = parseFloat(document.getElementById("qa-fa").value);
+      const qb = parseFloat(document.getElementById("qb-fa").value);
+      const qc = parseFloat(document.getElementById("qc-fa").value);
+      const rAB = parseFloat(document.getElementById("rab-fa").value);
+      const rAC = parseFloat(document.getElementById("rac-fa").value);
 
-      const q1C = convertMuatan(q1, q1Unit);
-      const q2C = convertMuatan(q2, q2Unit);
-      const rMeter = convertJarak(r, rUnit);
+      const qaUnit = document.getElementById("qaUnit-fa").value;
+      const qbUnit = document.getElementById("qbUnit-fa").value;
+      const qcUnit = document.getElementById("qcUnit-fa").value;
+      const rabUnit = document.getElementById("rabUnit-fa").value;
+      const racUnit = document.getElementById("racUnit-fa").value;
 
-      if (isNaN(q1) || isNaN(q2) || isNaN(r)) {
+      if ([qa, qb, qc, rAB, rAC].some(isNaN)) {
         alert("Semua nilai harus diisi!");
         return;
       }
 
-      const F = k * Math.abs(q1C * q2C) / (rMeter * rMeter);
+      const qaC = convertMuatan(qa, qaUnit);
+      const qbC = convertMuatan(qb, qbUnit);
+      const qcC = convertMuatan(qc, qcUnit);
+      const rABm = convertJarak(rAB, rabUnit);
+      const rACm = convertJarak(rAC, racUnit);
 
-      function convertMuatan(nilai, satuan) {
-        switch (satuan) {
-          case "mC": return nilai * 1e-3;
-          case "μC": return nilai * 1e-6;
-          case "nC": return nilai * 1e-9;
-          default: return nilai;
-        }
-      }
-
-      function convertJarak(nilai, satuan) {
-        switch (satuan) {
-          case "cm": return nilai * 1e-2;
-          case "mm": return nilai * 1e-3;
-          default: return nilai;
-        }
-      }
+      const tanpaK_Fab = qbC * qaC / (rABm ** 2);
+      const tanpaK_Fac = qcC * qaC / (rACm ** 2);
+      const Fab = k * tanpaK_Fab;
+      const Fac = k * tanpaK_Fac;
+      const FA = Fab + Fac;
 
       const langkah = `
-  <p><strong>Diketahui:</strong></p>
-  <div class="diketahui-list">
-    <p>Q₁ = ${formatQIlmiah(q1, q1Unit)}</p>
-    <p>Q₂ = ${formatQIlmiah(q2, q2Unit)}</p>
-    <p>${formatJarakGabungan(r, rUnit, "r")}</p>
-  </div>
+    <p><strong>Diketahui:</strong></p>
+    <div class="diketahui-list">
+      <p>Q<sub>A</sub> = ${formatQIlmiah(qa, qaUnit)}</p>
+      <p>Q<sub>B</sub> = ${formatQIlmiah(qb, qbUnit)}</p>
+      <p>Q<sub>C</sub> = ${formatQIlmiah(qc, qcUnit)}</p>
+      <p>${formatJarakGabungan(rAB, rabUnit, "r<sub>AB</sub>")}</p>
+      <p>${formatJarakGabungan(rAC, racUnit, "r<sub>AC</sub>")}</p>
+    </div>
 
-  <p><strong>Rumus:</strong></p>
-  \\[
-  F_A = k \\cdot \\left( \\frac{q_1 \\cdot q_2}{r^2} \\right)
-  \\]
+    <p><strong>Rumus:</strong></p>
+    \\[
+    F_A = F_{AB} + F_{AC}
+    \\]
+    \\[
+    F_A = k \\left(
+      \\frac{q_B q_A}{r_{AB}^2} + \\frac{q_C q_A}{r_{AC}^2}
+    \\right)
+    \\]
 
-  <p><strong>Perhitungan:</strong></p>
-  \\[
-  \\begin{aligned}
-  F_A &= 9 \\times 10^9 \\cdot \\left( \\frac{${formatCerdas(q1C)} \\cdot ${formatCerdas(q2C)}}{(${formatCerdas(rMeter)})^2} \\right) \\\\[6pt]
+    <p><strong>Perhitungan:</strong></p>
+    \\[
+    \\begin{aligned}
+    F_A &= 9 \\times 10^9 \\left(
+    \\frac{(${formatCerdas(qbC)} \\cdot ${formatCerdas(qaC)})}{(${formatCerdas(rABm)})^2}
+    + \\frac{(${formatCerdas(qcC)} \\cdot ${formatCerdas(qaC)})}{(${formatCerdas(rACm)})^2}
+    \\right) \\\\[6pt]
 
-      &= 9 \\times 10^9 \\cdot \\left( \\frac{${formatCerdas(q1C * q2C)}}{${formatCerdas(rMeter ** 2)}} \\right) \\\\[6pt]
+    &= 9 \\times 10^9 \\left(
+    \\frac{${formatCerdas(qbC * qaC)}}{${formatCerdas(rABm ** 2)}}
+    + \\frac{${formatCerdas(qcC * qaC)}}{${formatCerdas(rACm ** 2)}}
+    \\right) \\\\[6pt]
 
-      &= 9 \\times 10^9 \\cdot ${formatCerdas((q1C * q2C) / (rMeter ** 2))} \\\\[6pt]
+    &= 9 \\times 10^9 (${gabungTambahKurang(formatCerdas(tanpaK_Fab), formatCerdas(tanpaK_Fac))}) \\\\[6pt]
 
-      &= ${formatCerdas(F)}~\\text{N}
-  \\end{aligned}
-  \\]
-`;
+    &= 9 \\times 10^9 (${formatCerdas(tanpaK_Fab + tanpaK_Fac)}) \\\\[6pt]
 
-      document.getElementById("hasil-fa").innerHTML = `\\[ F = ${formatCerdas(F)}~\\text{N} \\]`;
+    &= ${formatCerdas(FA)}~\\text{N}
+    \\end{aligned}
+    \\]
+  `;
+
+      document.getElementById("hasil-fa").innerHTML = `\\[ F_A = ${formatCerdas(FA)}~\\text{N} \\]`;
+      document.getElementById("langkah-fa").innerHTML = langkah;
       document.getElementById("output-fa").classList.remove("hidden");
       document.getElementById("langkah-fa-section").classList.remove("hidden");
-      document.getElementById("langkah-fa").innerHTML = langkah;
       if (window.MathJax) MathJax.typesetPromise();
     }
 
@@ -963,10 +994,13 @@
     }
 
     function clearFA() {
-      ["q1-fa", "q2-fa", "r-fa"].forEach(id => {
+      // Kosongkan semua input nilai
+      const ids = ["qa-fa", "qb-fa", "qc-fa", "rab-fa", "rac-fa"];
+      ids.forEach(id => {
         document.getElementById(id).value = "";
       });
 
+      // Reset hasil dan langkah
       document.getElementById("output-fa").classList.add("hidden");
       document.getElementById("langkah-fa-section").classList.add("hidden");
 
