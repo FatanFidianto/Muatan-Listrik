@@ -827,50 +827,54 @@
       const rABm = convertJarak(rAB, rabUnit);
       const rBCm = convertJarak(rBC, rbcUnit);
 
-      const F1 = k * q1C * q3C / (rABm ** 2);
-      const F2 = k * q2C * q3C / (rBCm ** 2);
+      const tanpaK_F1 = q1C * q3C / (rABm ** 2);
+      const tanpaK_F2 = q2C * q3C / (rBCm ** 2);
+
+      const F1 = k * tanpaK_F1;
+      const F2 = k * tanpaK_F2;
       const FB = F1 - F2;
 
       const langkah = `
   <p><strong>Diketahui:</strong></p>
   <div class="diketahui-list">
-    <p>Q₁ = ${formatQIlmiah(q1, q1Unit)}</p>
-    <p>Q₂ = ${formatQIlmiah(q2, q2Unit)}</p>
-    <p>Q₃ = ${formatQIlmiah(q3, q3Unit)}</p>
-    <p>${formatJarakGabungan(rAB, rabUnit, "AB")}</p>
-    <p>${formatJarakGabungan(rBC, rbcUnit, "BC")}</p>
+    <p>Q<sub>A</sub> = ${formatQIlmiah(q1, q1Unit)}</p>
+    <p>Q<sub>B</sub> = ${formatQIlmiah(q2, q2Unit)}</p>
+    <p>Q<sub>C</sub> = ${formatQIlmiah(q3, q3Unit)}</p>
+    <p>${formatJarakGabungan(rAB, rabUnit, "r<sub>AB</sub>")}</p>
+    <p>${formatJarakGabungan(rBC, rbcUnit, "r<sub>BC</sub>")}</p>
   </div>
 
   <p><strong>Rumus:</strong></p>
   \\[
-  F_B = \\frac{k q_1 q_3}{r_{AB}^2} - \\frac{k q_2 q_3}{r_{BC}^2}
+  F_B = F_{BC} - F_{BA}
+  \\]
+  \\[
+  F_B = k \\left(
+    \\frac{q_A q_C}{r_{AB}^2} - \\frac{q_B q_C}{r_{BC}^2}
+  \\right)
   \\]
 
   <p><strong>Perhitungan:</strong></p>
-  \\[
-  \\begin{aligned}
-  F_B &= 9 \\times 10^9 \\left(
-  \\frac{${formatCerdas(q2C)} \\cdot ${formatCerdas(q3C)}}{(${formatCerdas(rBCm)})^2}
-  \\right)
-  - 9 \\times 10^9 \\left(
-  \\frac{${formatCerdas(q1C)} \\cdot ${formatCerdas(q3C)}}{(${formatCerdas(rABm)})^2}
-  \\right) \\\\[6pt]
+    \\[
+    \\begin{aligned}
+    F_B &= 9 \\times 10^9 \\left(
+      \\frac{(${formatCerdas(q1C)} \\cdot ${formatCerdas(q3C)})}{(${formatCerdas(rABm)})^2}
+      - \\frac{(${formatCerdas(q2C)} \\cdot ${formatCerdas(q3C)})}{(${formatCerdas(rBCm)})^2}
+    \\right) \\\\[6pt]
 
-  &= 9 \\times 10^9 \\left(
-  \\frac{${formatCerdas(q2C * q3C)}}{${formatCerdas(rBCm ** 2)}}
-  \\right)
-  - 9 \\times 10^9 \\left(
-  \\frac{${formatCerdas(q1C * q3C)}}{${formatCerdas(rABm ** 2)}}
-  \\right) \\\\[6pt]
+    &= 9 \\times 10^9 \\left(
+      \\frac{${formatCerdas(q1C * q3C)}}{${formatCerdas(rABm ** 2)}}
+      - \\frac{${formatCerdas(q2C * q3C)}}{${formatCerdas(rBCm ** 2)}}
+    \\right) \\\\[6pt]
 
-  &= 9 \\times 10^9 (${formatCerdas(F2)} - ${formatCerdas(F1)}) \\\\[6pt]
+    &= 9 \\times 10^9 (${gabungTambahKurang(formatCerdas(tanpaK_F1), formatCerdas(tanpaK_F2 * -1))} \\\\[6pt]
 
-  &= 9 \\times 10^9 (${formatCerdas(F2 - F1)}) \\\\[6pt]
+    &= 9 \\times 10^9 (${formatCerdas(tanpaK_F1 - tanpaK_F2)}) \\\\[6pt]
 
-  &= ${formatCerdas(FB)}~\\text{N}
-  \\end{aligned}
-  \\]
-`;
+    &= ${formatCerdas(FB)}~\\text{N}
+    \\end{aligned}
+    \\]
+  `;
 
       document.getElementById("hasil-fb").innerHTML = `\\[ F_B = ${formatCerdas(FB)}~\\text{N} \\]`;
       document.getElementById("langkah-fb").innerHTML = langkah;
@@ -1023,8 +1027,18 @@
     }
 
     function gabungTambahKurang(a, b) {
-      if (b.trim().startsWith("-")) {
-        return `${a} - ${b.trim().substring(1)}`;
+      const isNegA = a.trim().startsWith("-");
+      const isNegB = b.trim().startsWith("-");
+
+      const cleanA = isNegA ? a.trim().substring(1) : a.trim();
+      const cleanB = isNegB ? b.trim().substring(1) : b.trim();
+
+      if (isNegA && isNegB) {
+        return `-${cleanA} - ${cleanB}`;
+      } else if (isNegA) {
+        return `-${cleanA} + ${b}`;
+      } else if (isNegB) {
+        return `${a} - ${cleanB}`;
       } else {
         return `${a} + ${b}`;
       }
@@ -1062,9 +1076,13 @@
     }
 
     function formatCerdas(angka) {
+      if (angka === 0) return "0"; // 💥 fix utama
+
       const abs = Math.abs(angka);
       if (abs >= 1) {
-        return Number.isInteger(angka) ? angka.toString() : parseFloat(angka.toFixed(3)).toString();
+        return Number.isInteger(angka)
+          ? angka.toString()
+          : parseFloat(angka.toFixed(3)).toString();
       } else if (abs >= 0.01) {
         return parseFloat(angka.toFixed(4)).toString();
       } else {
