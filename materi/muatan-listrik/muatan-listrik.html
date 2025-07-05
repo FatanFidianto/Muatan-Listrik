@@ -917,41 +917,27 @@
   <script>
     // ✅ Fungsi hitungMuatan()
     function hitungMasingMasingQForm() {
-      const F = getInputGayaF("", true);
-      let F_display = `${toNotasiIlmiahString(F)}~\\text{N}`;
-      const F_dasar = parseFloat(document.getElementById("f-muatan").value);
-      const F_pangkat = parseInt(document.getElementById("f-muatan-pangkat").value);
+      const F_dasarStr = document.getElementById("f-muatan").value.trim();
+      const F_pangkatStr = document.getElementById("f-muatan-pangkat").value.trim();
+      const gayaKosong = F_dasarStr === "" && F_pangkatStr === "";
 
-      const r = parseFloat(document.getElementById("r-muatan").value);
-      const rUnit = document.getElementById("rUnit-muatan").value;
-      const Qsum = parseFloat(document.getElementById("qsum").value);
-      const QsumUnit = document.getElementById("qsum-unit").value;
-      const mode = document.getElementById("mode-q").value;
+      const rStr = document.getElementById("r-muatan").value.trim();
+      const qStr = document.getElementById("qsum").value.trim();
+      const rKosong = rStr === "";
+      const qKosong = qStr === "";
 
-      const gayaKosong = F === null;
-      const rKosong = isNaN(r);
-      const qKosong = isNaN(Qsum);
-
-      // Cek kondisi kombinasi
-      if (gayaKosong && rKosong && qKosong) {
+      if (gayaKosong || rKosong || qKosong) {
         alert("Isi semua nilai terlebih dahulu!");
         return;
       }
 
-      if (gayaKosong) {
-        alert("Masukkan nilai gaya F!");
-        return;
-      }
-
-      if (rKosong) {
-        alert("Masukkan nilai jarak r!");
-        return;
-      }
-
-      if (qKosong) {
-        alert("Masukkan nilai muatan Q!");
-        return;
-      }
+      const F = getInputGayaF("", true);
+      const F_display = `${toNotasiIlmiahString(F)}~\\text{N}`;
+      const r = parseFloat(rStr);
+      const Qsum = parseFloat(qStr);
+      const rUnit = document.getElementById("rUnit-muatan").value;
+      const QsumUnit = document.getElementById("qsum-unit").value;
+      const mode = document.getElementById("mode-q").value;
 
       function konversiSatuanQ(nilai, satuan) {
         switch (satuan) {
@@ -1081,14 +1067,20 @@
       const dasarInput = document.getElementById("f-muatan" + suffix);
       const pangkatInput = document.getElementById("f-muatan-pangkat" + suffix);
 
-      if (!dasarInput) return null;
-
-      const dasar = parseFloat(dasarInput.value);
+      const dasarRaw = dasarInput?.value.trim();
       const pangkatRaw = pangkatInput?.value.trim() ?? "";
+
+      // Jika input dasar kosong atau tidak ada
+      if (!dasarRaw) {
+        if (!silent) alert("Masukkan angka dasar gaya F!");
+        return null;
+      }
+
+      const dasar = parseFloat(dasarRaw);
       const pangkat = pangkatRaw === "" ? null : parseInt(pangkatRaw);
 
       if (isNaN(dasar)) {
-        if (!silent) alert("Masukkan angka dasar gaya F");
+        if (!silent) alert("Masukkan angka dasar gaya F!");
         return null;
       }
 
@@ -1192,20 +1184,8 @@
       const rKosong = isNaN(r);
       const qKosong = isNaN(q2);
 
-      if (gayaKosong && rKosong && qKosong) {
+      if (gayaKosong || rKosong || qKosong) {
         alert("Isi semua nilai terlebih dahulu!");
-        return;
-      }
-      if (gayaKosong) {
-        alert("Masukkan nilai gaya F!");
-        return;
-      }
-      if (rKosong) {
-        alert("Masukkan nilai jarak r!");
-        return;
-      }
-      if (qKosong) {
-        alert("Masukkan nilai muatan Q!");
         return;
       }
 
@@ -1317,20 +1297,8 @@
       const rKosong = isNaN(r);
       const qKosong = isNaN(q1);
 
-      if (gayaKosong && rKosong && qKosong) {
+      if (gayaKosong || rKosong || qKosong) {
         alert("Isi semua nilai terlebih dahulu!");
-        return;
-      }
-      if (gayaKosong) {
-        alert("Masukkan nilai gaya F!");
-        return;
-      }
-      if (rKosong) {
-        alert("Masukkan nilai jarak r!");
-        return;
-      }
-      if (qKosong) {
-        alert("Masukkan nilai muatan Q!");
         return;
       }
 
@@ -1443,18 +1411,8 @@
       const gayaKosong = gayaInput === null;
 
       // ✅ Cek kondisi alert
-      if (q1Kosong && q2Kosong && gayaKosong) {
+      if (q1Kosong || q2Kosong || gayaKosong) {
         alert("Isi semua nilai terlebih dahulu!");
-        return;
-      }
-
-      if (q1Kosong || q2Kosong) {
-        alert("Masukkan nilai muatan Q!");
-        return;
-      }
-
-      if (gayaKosong) {
-        alert("Masukkan nilai gaya F!");
         return;
       }
 
