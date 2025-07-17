@@ -1291,21 +1291,20 @@
     }
 
     .highlight-search {
-      animation: highlightFade 2s ease-out;
-      box-shadow: 0 0 12px 6px rgba(255, 255, 0, 0.6);
-      border-radius: 10px;
+      scroll-margin-top: 120px;
+      background-color: rgba(255, 200, 0, 0.85);
+      color: black;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-weight: bold;
+      box-shadow: 0 0 8px rgba(255, 200, 0, 0.5);
     }
 
-    @keyframes highlightFade {
-      0% {
-        background-color: rgba(255, 255, 0, 0.4);
-        box-shadow: 0 0 20px 10px rgba(255, 255, 0, 0.7);
-      }
-
-      100% {
-        background-color: transparent;
-        box-shadow: none;
-      }
+    .show-temporarily {
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      height: auto !important;
     }
   </style>
 
@@ -1320,11 +1319,12 @@
           <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
         </svg>
       </a>
-      <a href="javascript:void(0);" onclick="switchToSection('pengertian')" class="nav-item">PENGERTIAN</a>
-      <a href="javascript:void(0);" onclick="switchToSection('jenis')" class="nav-item">JENIS-JENIS</a>
-      <a href="javascript:void(0);" onclick="switchToSection('ciri')" class="nav-item">CIRI-CIRI</a>
-      <a href="javascript:void(0);" onclick="switchToSection('sejarah')" class="nav-item">SEJARAH</a>
-      <a href="javascript:void(0);" onclick="switchToSection('profile')" class="nav-item">PROFILE</a>
+      <a id="menu-pengertian" href="javascript:void(0);" onclick="switchToSection('pengertian')"
+        class="nav-item">PENGERTIAN</a>
+      <a id="menu-jenis" href="javascript:void(0);" onclick="switchToSection('jenis')" class="nav-item">JENIS-JENIS</a>
+      <a id="menu-ciri" href="javascript:void(0);" onclick="switchToSection('ciri')" class="nav-item">CIRI-CIRI</a>
+      <a id="menu-sejarah" href="javascript:void(0);" onclick="switchToSection('sejarah')" class="nav-item">SEJARAH</a>
+      <a id="menu-profile" href="javascript:void(0);" onclick="switchToSection('profile')" class="nav-item">PROFILE</a>
     </div>
     <div class="nav-right">
       <!-- Versi PENGERTIAN: Klik Panel Kanan -->
@@ -1700,7 +1700,7 @@
       <div class="profil-card fade-in-up">
         <img src="images/Anggota.png" alt="Nama Anggota 4">
         <h3>M Naufal Azmi</h3>
-        <p>NPM: 50424884</p>
+        <p>NRP: 50424884</p>
       </div>
     </div>
   </section>
@@ -1893,49 +1893,133 @@
   </script>
 
   <script>
+
+    function highlightText(node, keyword) {
+      const regex = new RegExp(`(${keyword})`, "gi");
+
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (regex.test(node.textContent)) {
+          const span = document.createElement("span");
+          span.innerHTML = node.textContent.replace(regex, `<span class="highlight-search">$1</span>`);
+          node.parentNode.replaceChild(span, node);
+        }
+      } else if (
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.childNodes &&
+        !["SCRIPT", "STYLE"].includes(node.tagName)
+      ) {
+        [...node.childNodes].forEach(child => highlightText(child, keyword));
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
       const input = document.querySelector(".search-input");
+
+      const searchAreas = [
+        { selector: ".pengertian-text", mode: "pengertian-mode" },
+        { selector: "#jenis-section", mode: "pengertian-mode" },
+        { selector: "#ciri-section", mode: "pengertian-mode" },
+        { selector: "#sejarah-section", mode: "pengertian-mode" },
+        { selector: "#profile-section", mode: "pengertian-mode" }
+      ];
 
       input.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
           e.preventDefault();
           const keyword = input.value.trim().toLowerCase();
-          if (!keyword) return;
 
-          const allCandidates = document.querySelectorAll("section, .profil-grid, .pengertian-wrapper, .jenis-teks, .ciri-teks");
+          // 💡 Cek bagian PERHITUNGAN (halaman terpisah)
+          const perhitunganPages = [
+            { keyword: "kuat arus", url: "materi/kuat-arus-listrik/kuat-arus-listrik.html" },
+            { keyword: "gaya coulomb", url: "materi/gaya-coulomb/gaya-coulomb.html" },
+            { keyword: "muatan listrik", url: "materi/muatan-listrik/muatan-listrik.html" },
+            { keyword: "gaya elektrostatis", url: "materi/gaya-elektrostatis/gaya-elektrostatis.html" }
+          ];
+
+          for (const page of perhitunganPages) {
+            if (keyword.includes(page.keyword)) {
+              window.location.href = `${page.url}?keyword=${encodeURIComponent(keyword)}`;
+              return;
+            }
+          }
+
+          // 💡 Aktifkan elemen tersembunyi agar bisa discan
+          searchAreas.forEach(area => {
+            document.querySelectorAll(area.selector).forEach(el => {
+              el.classList.add("show-temporarily");
+            });
+          });
+
+          // 🔄 Hapus highlight sebelumnya
+          searchAreas.forEach(area => {
+            document.querySelectorAll(area.selector).forEach(el => {
+              const spans = el.querySelectorAll("span.highlight-search");
+              spans.forEach(span => {
+                const parent = span.parentNode;
+                parent.replaceChild(document.createTextNode(span.textContent), span);
+                parent.normalize();
+              });
+            });
+          });
+
+          // 🔁 Jika input kosong → hanya hapus highlight, jangan ubah apapun
+          if (keyword === "") {
+            document.querySelectorAll(".show-temporarily").forEach(el => {
+              el.classList.remove("show-temporarily");
+            });
+            return;
+          }
+
           let found = false;
+          let foundMode = "";
+          let foundElement = null;
 
-          allCandidates.forEach(section => {
-            if (found) return;
+          for (const area of searchAreas) {
+            const elements = document.querySelectorAll(area.selector);
+            for (const el of elements) {
+              const text = (el.innerText || el.textContent || "").toLowerCase();
+              if (text.includes(keyword)) {
+                found = true;
+                foundMode = area.mode;
+                foundElement = el;
+                break;
+              }
+            }
+            if (found) break;
+          }
 
-            const text = section.innerText.toLowerCase();
-            if (text.includes(keyword)) {
-              const parentSection = section.closest("section");
-              if (!parentSection) return;
-
-              const sectionId = parentSection.id;
-
-              // Cek apakah perlu aktifkan section dengan switchToSection
-              const allowedSections = ["pengertian", "jenis", "ciri", "profile"];
-              for (const idPrefix of allowedSections) {
-                if (sectionId.startsWith(idPrefix)) {
-                  switchToSection(idPrefix);
-                  break;
-                }
+          if (found) {
+            if (foundMode === "pengertian-mode") {
+              if (foundElement.closest("#profile-section")) {
+                document.querySelector("#menu-profile")?.click();
+              } else if (foundElement.closest("#jenis-section")) {
+                document.querySelector("#menu-jenis")?.click();
+              } else if (foundElement.closest("#ciri-section")) {
+                document.querySelector("#menu-ciri")?.click();
+              } else if (foundElement.closest("#sejarah-section")) {
+                document.querySelector("#menu-sejarah")?.click();
+              } else {
+                document.querySelector("#menu-pengertian")?.click();
               }
 
               setTimeout(() => {
-                section.scrollIntoView({ behavior: "smooth", block: "start" });
-                section.classList.add("highlight-search");
-                setTimeout(() => section.classList.remove("highlight-search"), 2000);
-              }, 300);
+                highlightText(foundElement, keyword);
 
-              found = true;
+                const highlight = foundElement.querySelector(".highlight-search");
+                if (highlight) {
+                  highlight.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+
+                document.querySelectorAll(".show-temporarily").forEach(el => {
+                  el.classList.remove("show-temporarily");
+                });
+              }, 500);
             }
-          });
-
-          if (!found) {
+          } else {
             alert("Teks tidak ditemukan di halaman.");
+            document.querySelectorAll(".show-temporarily").forEach(el => {
+              el.classList.remove("show-temporarily");
+            });
           }
         }
       });
