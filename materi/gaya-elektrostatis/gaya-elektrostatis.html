@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perhitungan Muatan Listrik</title>
-  <link rel="stylesheet" href="/Muatan-Listrik/styles.css">
+  <link rel="stylesheet" href="styles.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
@@ -13,7 +13,7 @@
   <style>
     @font-face {
       font-family: 'Futura Std Medium';
-      src: url('/Muatan-Listrik/fonts/Futura Std Medium.ttf') format('opentype');
+      src: url('fonts/Futura Std Medium.ttf') format('opentype');
     }
 
     body {
@@ -480,6 +480,16 @@
       border-radius: 6px;
       font-family: 'Courier New', monospace;
     }
+
+    .highlight-search {
+      scroll-margin-top: 120px;
+      background-color: rgba(255, 200, 0, 0.85);
+      color: black;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-weight: bold;
+      box-shadow: 0 0 8px rgba(255, 200, 0, 0.5);
+    }
   </style>
 
 </head>
@@ -511,12 +521,12 @@
   <!-- Navigasi dipisahkan dari header-right -->
   <nav class="nav-left">
     <ul>
-      <li><a href="/Muatan-Listrik/index.html">Home</a></li>
-      <li><a href="/Muatan-Listrik/materi/kuat-arus-listrik/kuat-arus-listrik.html">Kuat Arus Listrik</a>
+      <li><a href="/FISIKA-WEB/index.html">Home</a></li>
+      <li><a href="/FISIKA-WEB/materi/kuat-arus-listrik/kuat-arus-listrik.html">Kuat Arus Listrik</a>
       </li>
-      <li><a href="/Muatan-Listrik/materi/gaya-coulomb/gaya-coulomb.html">Gaya Coulomb</a></li>
-      <li><a href="/Muatan-Listrik/materi/muatan-listrik/muatan-listrik.html">Muatan Listrik</a></li>
-      <li><a href="/Muatan-Listrik/materi/gaya-elektrostatis/gaya-elektrostatis.html" class="active">Gaya Elektrostatis</a>
+      <li><a href="/FISIKA-WEB/materi/gaya-coulomb/gaya-coulomb.html">Gaya Coulomb</a></li>
+      <li><a href="/FISIKA-WEB/materi/muatan-listrik/muatan-listrik.html">Muatan Listrik</a></li>
+      <li><a href="/FISIKA-WEB/materi/gaya-elektrostatis/gaya-elektrostatis.html" class="active">Gaya Elektrostatis</a>
       </li>
     </ul>
   </nav>
@@ -659,7 +669,7 @@
 
           <label for="rbc-fb">Jarak r<sub>BC</sub>:</label>
           <div class="row-input">
-            <input type="number" id="rbc-fb" placeholder="Masukkan jarak rᵦ꜀">
+            <input type="number" id="rbc-fb" placeholder="Masukkan jarak rₐ꜀">
             <select id="rbcUnit-fb">
               <option value="m">m</option>
               <option value="cm" selected>cm</option>
@@ -1125,11 +1135,82 @@
         return `${parseFloat(mantissa)} × 10${superscript(parseInt(exp))}`;
       }
     }
-    
+
     function superscript(exp) {
       const supers = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
       return exp.toString().split('').map(c => supers[c] || '').join('');
     }
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.querySelector(".search-input");
+
+      // ⬇️ Tambahkan bagian ini di atas event listener
+      const pageKeywords = [
+        { keyword: "pengertian", url: "/FISIKA-WEB/index.html" },
+        { keyword: "jenis", url: "/FISIKA-WEB/index.html" },
+        { keyword: "ciri", url: "/FISIKA-WEB/index.html" },
+        { keyword: "sejarah", url: "/FISIKA-WEB/index.html" },
+        { keyword: "kuat arus", url: "/FISIKA-WEB/materi/kuat-arus-listrik/kuat-arus-listrik.html" },
+        { keyword: "gaya coulomb", url: "/FISIKA-WEB/materi/gaya-coulomb/gaya-coulomb.html" },
+        { keyword: "muatan listrik", url: "/FISIKA-WEB/materi/muatan-listrik/muatan-listrik.html" },
+        { keyword: "gaya elektrostatis", url: "/FISIKA-WEB/materi/gaya-elektrostatis/gaya-elektrostatis.html" }
+      ];
+
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          const keyword = input.value.trim().toLowerCase();
+          clearPreviousHighlights();
+
+          for (const page of pageKeywords) {
+            if (keyword.includes(page.keyword)) {
+              window.location.href = `${page.url}?keyword=${encodeURIComponent(keyword)}`;
+              return;
+            }
+          }
+
+          // Jika tidak redirect, lakukan highlight lokal
+          highlightTextInDocument(keyword);
+        }
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      const keyword = params.get("keyword");
+      if (keyword) {
+        setTimeout(() => {
+          clearPreviousHighlights();
+          highlightTextInDocument(keyword);
+        }, 200);
+      }
+
+      function clearPreviousHighlights() {
+        const highlights = document.querySelectorAll(".highlight-search");
+        highlights.forEach(span => {
+          const parent = span.parentNode;
+          parent.replaceChild(document.createTextNode(span.textContent), span);
+          parent.normalize(); // gabungkan text node jika perlu
+        });
+      }
+
+      function highlightTextInDocument(keyword) {
+        const regex = new RegExp(`(${keyword})`, "gi");
+        function walk(node) {
+          if (node.nodeType === Node.TEXT_NODE && regex.test(node.textContent)) {
+            const span = document.createElement("span");
+            span.innerHTML = node.textContent.replace(regex, `<span class="highlight-search">$1</span>`);
+            node.parentNode.replaceChild(span, node);
+          } else if (
+            node.nodeType === Node.ELEMENT_NODE &&
+            node.childNodes &&
+            !["SCRIPT", "STYLE"].includes(node.tagName)
+          ) {
+            [...node.childNodes].forEach(walk);
+          }
+        }
+        walk(document.body);
+      }
+    });
   </script>
 
 </body>
